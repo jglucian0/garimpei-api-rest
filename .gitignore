@@ -1,0 +1,45 @@
+# Dependências e Logs do Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Variáveis de Ambiente
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.pem
+
+# Arquivos de Sistema Operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Configurações de IDE e Editores
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Específico do Projeto: Garimpei API Rest
+# Ignora arquivos temporários e downloads
+uploads/temp/*
+
+# Ignora cookies gerados/baixados
+uploads/cookies/*
+
+# Build e Coverage
+dist/
+build/
+coverage/
+.nyc_output/
