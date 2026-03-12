@@ -13,7 +13,7 @@ class SessionSingleton {
     if (!this.browser) {
       console.log('[Puppeteer] Starting broenser...');
       this.browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
