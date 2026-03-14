@@ -11,9 +11,8 @@ class SessionSingleton {
 
   async initBrowser() {
     if (!this.browser) {
-      console.log('[Puppeteer] Starting broenser...');
       this.browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -26,7 +25,6 @@ class SessionSingleton {
       });
 
       this.browser.on('disconnected', () => {
-        console.log('[Puppeteer] Browser disconnected. Resetting variable...');
         this.browser = null;
       });
     }
@@ -59,7 +57,6 @@ class SessionSingleton {
 
   async closeBrowser() {
     if (this.browser) {
-      console.log('[Puppeteer] Quitting browser safely...');
       await this.browser.close();
       this.browser = null;
     }
