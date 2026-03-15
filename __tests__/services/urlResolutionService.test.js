@@ -15,7 +15,8 @@ describe('UrlResolutionService Isolated Test', () => {
     expect(resolved).toBe('https://www.mercadolivre.com.br/multivitaminico-120-caps-growth-supplements-sabor-neutro-nova-formula/p/MLB21555776');
   });
 
-  test('Should resolve /sec/ shortener', async () => {
+
+  test('Should resolve MercadoLivre /sec/ shortener', async () => {
     const url = 'https://mercadolivre.com/sec/2mZSs8j';
     const resolved = await urlResolutionService.resolveFinalUrl(url);
 
