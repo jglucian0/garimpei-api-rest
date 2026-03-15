@@ -2,12 +2,12 @@ const sessionSingleton = require('../../src/services/sessionSingleton');
 
 jest.setTimeout(15000);
 
-describe('Teste do Session Singleton (Puppeteer)', () => {
+describe('Session Singleton Test (Puppeteer)', () => {
   afterAll(async () => {
     await sessionSingleton.closeBrowser();
   });
 
-  test('Deve garantir que apenas uma instância do browser seja criada (Singleton)', async () => {
+  test('Must ensure that only one browser instance is created (Singleton)', async () => {
     const browser1 = await sessionSingleton.initBrowser();
     const browser2 = await sessionSingleton.initBrowser();
 
@@ -15,7 +15,7 @@ describe('Teste do Session Singleton (Puppeteer)', () => {
     expect(browser1.isConnected()).toBe(true);
   });
 
-  test('Deve abrir uma aba, injetar o User-Agent e manter o browser vivo ao fechar a aba', async () => {
+  test('It should open a tab, inject the User-Agent and keep the browser alive when closing the tab', async () => {
     const page = await sessionSingleton.getPage();
     expect(page).toBeDefined();
     expect(page.isClosed()).toBe(false);
