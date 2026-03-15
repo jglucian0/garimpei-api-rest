@@ -37,6 +37,16 @@ Jest (Unit and integration testing)
 
 Docker (Containerization for scalable deployment)
 
+<h2 id="features">🧾 Key Features & Architecture</h2>
+
+To ensure speed and resilience, the API implements several architectural patterns:
+
+- **Isolated Contexts:** Each extraction runs in a secure, anonymous browser context `createBrowserContext()`, preventing session leaking between users and ensuring accurate affiliate metrics.
+- **URL Resolution Service (Unshorter):** A lightweight Axios-based service that automatically resolves shortened links (like `meli.la` or `/sec/`) and extracts the final product URL from social profile pages via Regex, saving Chromium resources.
+- **Separation of Concerns (SoC):** DOM extraction logic is completely decoupled from the Puppeteer engine, making maintenance and CSS selector updates much easier.
+- **Dynamic Affiliate Tags:** The affiliate generation service supports dynamic tags per request, allowing users to track different campaigns in real-time.
+- **Stable Unit Testing:** Comprehensive Jest test suite using Puppeteer Mocks to ensure the logic runs smoothly without hitting real servers.
+
 <h2 id="started">🚀 Getting started</h2>
 
 This project uses Puppeteer in Singleton mode to manage Chromium instances and ensure data extraction performance, since Mercado Livre restricts access to public data and does not provide an API for such functions.
@@ -75,8 +85,8 @@ npm test
 ```
 
 <h2 id="routes">📍 API Endpoints</h2>
-​
-| route               | description                                          
+
+| route               | description                                                                         
 |----------------------|-----------------------------------------------------
 | <kbd>POST /api/v1/config/cookies</kbd>     | validates and saves Mercado Livre cookies in the database. [response details](#post-cookies-detail)
 | <kbd>POST /api/v1/extract</kbd>     | Performs data extraction from a product using isolated context [request details](#post-extract-detail)
@@ -108,7 +118,8 @@ npm test
 ```json
 {
   "userId": "garimpei_user_01",
-  "url": "https://www.mercadolivre.com.br/apple-macbook-pro-pro-m4-mw2u..."
+  "url": "https://meli.la/213wWUb",
+  "tag": "minha_campanha_insta"
 }
 ```
 
@@ -119,7 +130,7 @@ npm test
   "imagePath": "imagemParaEnviar",
   "product": "Macbook Pro 14 Apple M4 SSD de 16 GB, 512 GB de espaço",
   "color": "Preto-espacial, prateado",
-  "link": "https://meli.la/213wWUb",
+  "link": "https://mercadolivre.com/sec/xyz...",
   "linkOriginal": "https://www.mercadolivre.com.br/apple-macbook-pro-pro-m4-mw2u...",
   "original_price": 14972,
   "current_price": 11972,
@@ -196,6 +207,16 @@ Jest (Testes unitários e de integração)
 
 Docker (Containerização para deploy escalável)
 
+<h2 id="features-pt">🧾 Principais Funcionalidades e Arquitetura</h2>
+
+Para garantir velocidade e resiliência, a API implementa os seguintes padrões arquiteturais:
+
+- **Contextos Isolados:** Cada extração ocorre em um contexto anônimo do navegador `createBrowserContext()`, evitando o vazamento de sessão entre os clientes do SaaS e protegendo métricas de afiliados.
+- **Serviço de Resolução de URL (Unshorter):** Uma camada ultra leve via Axios que processa links encurtados (`meli.la`, etc.) e extrai o link real do produto de páginas sociais via Regex antes de abrir o Chromium.
+- **Separação de Responsabilidades:** A lógica de extração do DOM (`mercadoLivreExtractor.js`) é totalmente isolada do motor do Puppeteer, facilitando manutenções futuras em seletores CSS.
+- **Tags Dinâmicas de Afiliado:** O serviço de requisição de links suporta injeção de tags em tempo real, flexibilizando as campanhas dos usuários.
+- **Testes Unitários Estáveis:** Cobertura de testes com Jest utilizando "Mocks" do Puppeteer, permitindo testar a lógica complexa de negócios sem risco de timeout ou bloqueios de CAPTCHA do Mercado Livre.
+
 <h2 id="started">🚀 Getting started</h2>
 
 Este projeto utiliza o Puppeteer em modo Singleton para gerenciar instâncias do Chromium e garantir performance na extração de dados, uma vez que o Mercado Livre dificulta o acesso a dados públicos e não disponibiliza API para tal função.
@@ -234,15 +255,13 @@ npm test
 ```
 
 <h2 id="routes">📍 API Endpoints</h2>
-
-Here you can list the main routes of your API, and what are their expected request bodies.
 ​
 | route | description  
 |----------------------|-----------------------------------------------------
-| <kbd>POST /api/v1/config/cookies</kbd> | validates and saves Mercado Livre cookies in the database. [response details](#post-cookies-detail)
-| <kbd>POST /api/v1/extract</kbd> | Performs data extraction from a product using isolated context [request details](#post-extract-detail)
+| <kbd>POST /api/v1/config/cookies</kbd> | validates and saves Mercado Livre cookies in the database. [response details](#post-cookies-detail-pt)
+| <kbd>POST /api/v1/extract</kbd> | Performs data extraction from a product using isolated context [request details](#post-extract-detail-pt)
 
-<h3 id="post-cookies-detail">POST /api/v1/config/cookies</h3>
+<h3 id="post-cookies-detail-pt">POST /api/v1/config/cookies</h3>
 
 **_REQUEST BODY_**
 
@@ -262,14 +281,15 @@ Here you can list the main routes of your API, and what are their expected reque
 }
 ```
 
-<h3 id="post-extract-detail">POST /api/v1/extract</h3>
+<h3 id="post-extract-detail-pt">POST /api/v1/extract</h3>
 
 **_REQUEST BODY_**
 
 ```json
 {
   "userId": "garimpei_user_01",
-  "url": "https://www.mercadolivre.com.br/apple-macbook-pro-pro-m4-mw2u..."
+  "url": "https://meli.la/213wWUb",
+  "tag": "minha_campanha_insta"
 }
 ```
 
@@ -280,7 +300,7 @@ Here you can list the main routes of your API, and what are their expected reque
   "imagePath": "imagemParaEnviar",
   "product": "Macbook Pro 14 Apple M4 SSD de 16 GB, 512 GB de espaço",
   "color": "Preto-espacial, prateado",
-  "link": "https://meli.la/213wWUb",
+  "link": "https://mercadolivre.com/sec/xyz...",
   "linkOriginal": "https://www.mercadolivre.com.br/apple-macbook-pro-pro-m4-mw2u...",
   "original_price": 14972,
   "current_price": 11972,
