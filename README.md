@@ -62,7 +62,7 @@ PostgreSQL Instance (Neon DB account recommended)
 <h3>Cloning</h3>
 
 ```bash
-git clone https://github.com/jglucian0/garimpei-api-rest
+git clone [https://github.com/jglucian0/garimpei-api-rest](https://github.com/jglucian0/garimpei-api-rest)
 ```
 
 <h3>Config .env variables</h3>
@@ -84,12 +84,29 @@ npm run dev   # To run tests
 npm test
 ```
 
+<h2 id="extension">🧩 Chrome Extension (Cookie Collector)</h2>
+
+To make cookie collection easier and cleaner for the user, we implemented a custom Chrome Extension. It automatically extracts the required session tokens (like `ssid`) from Mercado Livre without manual inspection.
+
+**How to use:**
+
+1. **Install:** Add the extension to your Chrome browser [Clicking Here](#).
+2. **Log in:** Access your Mercado Livre Affiliates account (we recommend using a _Collaborator_ account for security).
+3. **Copy:** Click the extension icon in your browser's top right corner and click **"Copy Token"**.
+4. **Configure:** Send the copied data along with your affiliate tag to our `/api/v1/config/cookies` endpoint.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c2ccc70b-ee70-446e-be43-bb11a6846ec8" alt="Chrome Extension">
+  <br>
+  <i>(Replace this placeholder with the actual extension screenshot)</i>
+</p>
+
 <h2 id="routes">📍 API Endpoints</h2>
 
-| route               | description                                                                         
-|----------------------|-----------------------------------------------------
-| <kbd>POST /api/v1/config/cookies</kbd>     | validates and saves Mercado Livre cookies in the database. [response details](#post-cookies-detail)
-| <kbd>POST /api/v1/extract</kbd>     | Performs data extraction from a product using isolated context [request details](#post-extract-detail)
+| route                                  | description                                                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| <kbd>POST /api/v1/config/cookies</kbd> | validates and saves Mercado Livre cookies and tag in the database. [response details](#post-cookies-detail) |
+| <kbd>POST /api/v1/extract</kbd>        | Performs data extraction from a product using isolated context [request details](#post-extract-detail)      |
 
 <h3 id="post-cookies-detail">POST /api/v1/config/cookies</h3>
 
@@ -98,7 +115,8 @@ npm test
 ```json
 {
   "userId": "garimpei_user_01",
-  "cookie": "# Netscape HTTP Cookie File\n.mercadolivre.com.br\tTRUE\t/\tTRUE\t..."
+  "cookies": "ssid=ghy-031018...; _d2id=8b86...; _csrf=eGDB...",
+  "tag": "minha_campanha_insta"
 }
 ```
 
@@ -106,7 +124,7 @@ npm test
 
 ```json
 {
-  "message": "Cookies validated and saved successfully in the database!",
+  "message": "Cookies and Tag successfully validated and saved in the database!",
   "active": true
 }
 ```
@@ -118,8 +136,7 @@ npm test
 ```json
 {
   "userId": "garimpei_user_01",
-  "url": "https://meli.la/213wWUb",
-  "tag": "minha_campanha_insta"
+  "url": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)"
 }
 ```
 
@@ -127,16 +144,16 @@ npm test
 
 ```json
 {
-  "imagePath": "imagemParaEnviar",
-  "product": "Macbook Pro 14 Apple M4 SSD de 16 GB, 512 GB de espaço",
-  "color": "Preto-espacial, prateado",
-  "link": "https://mercadolivre.com/sec/xyz...",
-  "linkOriginal": "https://www.mercadolivre.com.br/apple-macbook-pro-pro-m4-mw2u...",
-  "original_price": 14972,
-  "current_price": 11972,
-  "discount": "20% OFF",
+  "imagePath": "![product_image](https://http2.mlstatic.com/D_NQ_NP_2X_608153-MLB97012029091_112025-F-relogio-masculino-de-pulso-social-classico-casual-original.webp)",
+  "product": "Relógio Masculino De Pulso Social Clássico Casual Original",
+  "link": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)",
+  "linkOriginal": "[https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM](https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM)",
+  "original_price": 99,
+  "current_price": 63.36,
+  "discount": "36% OFF",
   "free_shipping": true,
-  "seller": "Loja Oficial Apple"
+  "soldQuantity": "+1000 vendidos",
+  "coupon_applied": false
 }
 ```
 
@@ -193,7 +210,7 @@ Open a Pull Request detailing the changes.
 <i>Este projeto foi concebido para resolver uma dor real: a morosidade no processo de curadoria de produtos para afiliados de múltiplos marketplaces. Diferente de scrapers generalistas, o Garimpei foca no "essencial bem feito", entregando apenas os dados críticos necessários para conversão (Preços, Título, Imagem (com markdown) e Link de affiliado) de forma rápida e segura, eliminando o trabalho manual exaustivo dos afiliados.</i>
 </p>
 
-<h2 id="tech">💻 Technologies</h2>
+<h2 id="tech">💻 Tecnologias</h2>
 
 Node.js (Runtime principal)
 
@@ -211,15 +228,16 @@ Docker (Containerização para deploy escalável)
 
 Para garantir velocidade e resiliência, a API implementa os seguintes padrões arquiteturais:
 
-- **Contextos Isolados:** Cada extração ocorre em um contexto anônimo do navegador `createBrowserContext()`, evitando o vazamento de sessão entre os clientes do SaaS e protegendo métricas de afiliados.
+- **Contextos Isolados:** Cada extração ocorre num contexto anónimo do navegador `createBrowserContext()`, evitando o vazamento de sessão entre os clientes do SaaS e protegendo métricas de afiliados.
 - **Serviço de Resolução de URL (Unshorter):** Uma camada ultra leve via Axios que processa links encurtados (`meli.la`, etc.) e extrai o link real do produto de páginas sociais via Regex antes de abrir o Chromium.
 - **Separação de Responsabilidades:** A lógica de extração do DOM (`mercadoLivreExtractor.js`) é totalmente isolada do motor do Puppeteer, facilitando manutenções futuras em seletores CSS.
-- **Tags Dinâmicas de Afiliado:** O serviço de requisição de links suporta injeção de tags em tempo real, flexibilizando as campanhas dos usuários.
+- **Tags Dinâmicas de Afiliado:** O serviço de requisição de links suporta injeção de tags em tempo real, flexibilizando as campanhas dos utilizadores.
 - **Testes Unitários Estáveis:** Cobertura de testes com Jest utilizando "Mocks" do Puppeteer, permitindo testar a lógica complexa de negócios sem risco de timeout ou bloqueios de CAPTCHA do Mercado Livre.
+- **Coleta Fácil de Cookies:** Utilizamos uma extensão personalizada do Chrome para coletar os cookies de sessão do Mercado Livre de forma simples e limpa, melhorando a experiência do utilizador e a funcionalidade do sistema.
 
-<h2 id="started">🚀 Getting started</h2>
+<h2 id="started">🚀 Primeiros Passos</h2>
 
-Este projeto utiliza o Puppeteer em modo Singleton para gerenciar instâncias do Chromium e garantir performance na extração de dados, uma vez que o Mercado Livre dificulta o acesso a dados públicos e não disponibiliza API para tal função.
+Este projeto utiliza o Puppeteer em modo Singleton para gerir instâncias do Chromium e garantir performance na extração de dados, uma vez que o Mercado Livre dificulta o acesso a dados públicos e não disponibiliza API para tal função.
 
 <h3>Prerequisites</h3>
 
@@ -232,12 +250,12 @@ PostgreSQL Instance (Conta no Neon DB recomendada)
 <h3>Cloning</h3>
 
 ```bash
-git clone https://github.com/jglucian0/garimpei-api-rest
+git clone [https://github.com/jglucian0/garimpei-api-rest](https://github.com/jglucian0/garimpei-api-rest)
 ```
 
 <h3>Config .env variables</h3>
 
-Crie um arquivo .env na raiz do projeto com as seguintes variáveis:
+Crie um ficheiro .env na raiz do projeto com as seguintes variáveis:
 
 ```yaml
 PORT=3001
@@ -254,6 +272,23 @@ npm run dev   # Para rodar os testes
 npm test
 ```
 
+<h2 id="extension-pt">🧩 Extensão do Chrome (Coletor de Cookies)</h2>
+
+Para facilitar a coleta de cookies de forma limpa, implementámos uma extensão personalizada do Chrome. Ela extrai automaticamente os tokens de sessão necessários (como `ssid`) do Mercado Livre, dispensando a necessidade de inspeção manual por parte do utilizador.
+
+**Como utilizar:**
+
+1. **Instale:** Adicione a extensão ao seu navegador Chrome [Clicando Aqui](#).
+2. **Faça Login:** Aceda à sua conta de Afiliado no Mercado Livre (recomendamos o uso de uma conta de _Colaborador_ por questões de segurança).
+3. **Copie:** Clique no ícone da extensão no canto superior direito do seu navegador e, em seguida, em **"Copiar Token"**.
+4. **Configure:** Envie os dados copiados juntamente com a sua tag de afiliado para o nosso endpoint `/api/v1/config/cookies`.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/17d48e2a-db40-446b-b80b-3119c6dc03f8" alt="Chrome Extension">
+  <br>
+  <i>(Substitua este placeholder com o print real da extensão)</i>
+</p>
+
 <h2 id="routes">📍 API Endpoints</h2>
 ​
 | route | description  
@@ -268,7 +303,8 @@ npm test
 ```json
 {
   "userId": "garimpei_user_01",
-  "cookie": "# Netscape HTTP Cookie File\n.mercadolivre.com.br\tTRUE\t/\tTRUE\t..."
+  "cookies": "ssid=ghy-031018...; _d2id=8b86...; _csrf=eGDB...",
+  "tag": "minha_campanha_insta"
 }
 ```
 
@@ -276,7 +312,7 @@ npm test
 
 ```json
 {
-  "message": "Cookies validados e salvos com sucesso no banco de dados!",
+  "message": "Cookies and Tag successfully validated and saved in the database!",
   "active": true
 }
 ```
@@ -288,8 +324,7 @@ npm test
 ```json
 {
   "userId": "garimpei_user_01",
-  "url": "https://meli.la/213wWUb",
-  "tag": "minha_campanha_insta"
+  "url": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)"
 }
 ```
 
@@ -297,20 +332,20 @@ npm test
 
 ```json
 {
-  "imagePath": "imagemParaEnviar",
-  "product": "Macbook Pro 14 Apple M4 SSD de 16 GB, 512 GB de espaço",
-  "color": "Preto-espacial, prateado",
-  "link": "https://mercadolivre.com/sec/xyz...",
-  "linkOriginal": "https://www.mercadolivre.com.br/apple-macbook-pro-pro-m4-mw2u...",
-  "original_price": 14972,
-  "current_price": 11972,
-  "discount": "20% OFF",
+  "imagePath": "![product_image](https://http2.mlstatic.com/D_NQ_NP_2X_608153-MLB97012029091_112025-F-relogio-masculino-de-pulso-social-classico-casual-original.webp)",
+  "product": "Relógio Masculino De Pulso Social Clássico Casual Original",
+  "link": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)",
+  "linkOriginal": "[https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM](https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM)",
+  "original_price": 99,
+  "current_price": 63.36,
+  "discount": "36% OFF",
   "free_shipping": true,
-  "seller": "Loja Oficial Apple"
+  "soldQuantity": "+1000 vendidos",
+  "coupon_applied": false
 }
 ```
 
-<h2 id="colab">🤝 Collaborators</h2>
+<h2 id="colab">🤝 Colaboradores</h2>
 
 <table>
   <tr>
@@ -341,7 +376,7 @@ npm test
   </tr>
 </table>
 
-<h2 id="contribute">📫 Contribute</h2>
+<h2 id="contribute">📫 Contribuições</h2>
 
 git checkout -b feature/sua-feature
 
