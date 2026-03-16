@@ -3,14 +3,17 @@ const userConfigRepository = require('../../repositories/userConfigRepository');
 
 class AffiliateService {
 
-  async generateAffiliateLink(originalLink, userId, tag) {
-    if (!tag) {
-      throw new Error('TAG_REQUIRED');
+  async generateAffiliateLink(originalLink, userId) {
+    const userConfig = await userConfigRepository.getUserConfigs(userId);
+
+    if (!userConfig || !userConfig.cookies || !userConfig.cookies.length) {
+      throw new Error('COOKIES_NOT_FOUND');
     }
 
-    const cookies = await userConfigRepository.getUserCookies(userId);
-    if (!cookies || !cookies.length) {
-      throw new Error('COOKIES_NOT_FOUND');
+    const { cookies, tag } = userConfig;
+
+    if (!tag) {
+      throw new Error('TAG_NOT_FOUND_IN_DB');
     }
 
     const ssid = cookies.find(c => c.name === 'ssid')?.value;
