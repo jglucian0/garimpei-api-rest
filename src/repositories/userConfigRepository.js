@@ -2,30 +2,31 @@ const pool = require('../infra/db');
 
 class UserConfigRepository {
 
-  async saveUserCookies(userId, marketplace, cookiesArray) {
+  async saveUserConfigs(userId, marketplace, cookiesArray, tag) {
     const query = `
-      INSERT INTO user_marketplace_configs (user_id, marketplace, cookies, updated_at)
-      VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+      INSERT INTO user_marketplace_configs (user_id, marketplace, cookies, tag, updated_at)
+      VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
       ON CONFLICT (user_id) 
       DO UPDATE SET 
         cookies = EXCLUDED.cookies,
+        tag = EXCLUDED.tag,
         updated_at = CURRENT_TIMESTAMP;
     `;
 
-    const values = [userId, marketplace, JSON.stringify(cookiesArray)];
+    const values = [userId, marketplace, JSON.stringify(cookiesArray), tag];
 
     try {
       await pool.query(query, values);
       return true;
     } catch (error) {
-      console.error('[Repository] Error saving cookies:', error.message);
-      throw new Error('Failed to save cookies to the database.');
+      console.error('[Repository] Error saving configs:', error.message);
+      throw new Error('Failed to save configurations to the database.');
     }
   }
 
-  async getUserCookies(userId) {
+  async getUserConfigs(userId) {
     const query = `
-      SELECT cookies 
+      SELECT cookies, tag 
       FROM user_marketplace_configs 
       WHERE user_id = $1 
       LIMIT 1;
@@ -35,13 +36,13 @@ class UserConfigRepository {
       const result = await pool.query(query, [userId]);
 
       if (result.rows.length === 0) {
-        return [];
+        return null; // Retorna null para indicar que não achou o usuário
       }
 
-      return result.rows[0].cookies;
+      return result.rows[0]; // Retorna um objeto { cookies: [...], tag: "minha_tag" }
     } catch (error) {
-      console.error('[Repository] Error when fetching cookies:', error.message);
-      throw new Error('Failed to retrieve cookies from the database.');
+      console.error('[Repository] Error when fetching configs:', error.message);
+      throw new Error('Failed to retrieve configurations from the database.');
     }
   }
 }

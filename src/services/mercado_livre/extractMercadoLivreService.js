@@ -9,16 +9,20 @@ class ScraperService {
 
     const url = await urlResolutionService.resolveFinalUrl(rawUrl);
 
-    const cookies = await userConfigRepository.getUserCookies(userId);
-    if (!cookies || !cookies.length) {
+    const userConfig = await userConfigRepository.getUserConfigs(userId);
+
+    if (!userConfig || !userConfig.cookies || !userConfig.cookies.length) {
       throw new Error('COOKIES_NOT_FOUND');
     }
+
+    const cookies = userConfig.cookies;
 
     let context;
     let page;
 
     try {
-      context = await sessionSingleton.browser.createBrowserContext();
+      const browser = await sessionSingleton.initBrowser();
+      context = await browser.createBrowserContext();
       page = await context.newPage();
 
       await this.preparePage(page);
