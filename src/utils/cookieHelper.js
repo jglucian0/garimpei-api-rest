@@ -1,34 +1,38 @@
-function parseCookieLine(line) {
-  if (!line.trim() || line.startsWith('#')) return null;
+function parseCookieHeader(cookieString) {
+  if (!cookieString || typeof cookieString !== 'string') {
+    throw new Error('Invalid cookie format.');
+  }
 
-  const parts = line.split('\t');
-  if (parts.length < 7) return null;
+  const cookies = cookieString
+    .split(';')
+    .map(c => c.trim())
+    .filter(Boolean)
+    .map(pair => {
+      const [name, ...rest] = pair.split('=');
+      const value = rest.join('=');
 
-  return {
-    domain: parts[0],
-    path: parts[2],
-    secure: parts[3] === 'TRUE',
-    expires: Number(parts[4]) || -1,
-    name: parts[5],
-    value: parts[6].trim(),
-    httpOnly: false
-  };
-}
+      return {
+        name,
+        value,
+        domain: '.mercadolivre.com.br',
+        path: '/',
+        secure: true,
+        httpOnly: false,
+        expires: -1
+      };
+    });
 
-function validateAndParseCookies(content) {
-  const cookies = content.split('\n').map(parseCookieLine).filter(Boolean);
+  if (!cookies.length) {
+    throw new Error('No cookies were detected.');
+  }
 
-  if (!cookies.length) throw new Error('Invalid format.');
+  const hasSSID = cookies.some(c => c.name === 'ssid');
 
-  const hasIdentity = cookies.some(c =>
-    c.name.includes('sid') || c.name.includes('ssid') || c.name.includes('_d2id') || c.name.includes('auth')
-  );
-
-  if (!hasIdentity) {
-    throw new Error('The file does not contain valid session cookies (identity tokens are missing).');
+  if (!hasSSID) {
+    throw new Error('Cookie does not contain ssid (not logged session).');
   }
 
   return cookies;
 }
 
-module.exports = { validateAndParseCookies };
+module.exports = { parseCookieHeader };

@@ -11,7 +11,7 @@ app.use(express.json());
 app.use('/api/v1', routes);
 
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Servidor online' });
+  res.status(200).json({ message: 'Server online' });
 });
 
 app.get('/health', (req, res) => {

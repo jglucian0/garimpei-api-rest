@@ -16,7 +16,7 @@ class ConfigController {
         return res.status(400).json({ error: 'The cookie text was not sent correctly.' });
       }
 
-      const cookiesArray = cookieHelper.validateAndParseCookies(cookie);
+      const cookiesArray = cookieHelper.parseCookieHeader(cookie);
 
       const isValid = await cookieValidatorService.verifySessionActive(cookiesArray);
 
