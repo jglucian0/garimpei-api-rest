@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <style>
+      body {
+        width: 320px;
+        background: #0b0f17;
+        color: #e6edf3;
+        font-family: system-ui;
+        padding: 16px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+      }
+
+      .title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .subtitle {
+        font-size: 11px;
+        color: #8b949e;
+      }
+
+      .card {
+        background: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      .ok {
+        background: #22c55e;
+      }
+
+      .error {
+        background: #ef4444;
+      }
+
+      .cookie-box {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+
+        height: 38px;
+
+        background: #020617;
+        border: 1px solid #1f2937;
+        border-radius: 6px;
+
+        color: #9ca3af;
+        font-size: 11px;
+        padding: 8px;
+
+        line-height: 1.2;
+
+        overflow: hidden;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+
+        word-break: break-all;
+      }
+
+      .button {
+        width: 100%;
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 6px;
+        border: none;
+        background: #2563eb;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .button:hover {
+        background: #1d4ed8;
+      }
+
+      .copy-ok {
+        text-align: center;
+        font-size: 12px;
+        margin-top: 6px;
+        color: #22c55e;
+        opacity: 0;
+        transition: 0.2s;
+      }
+
+      .show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="header">
+      <img src="128.png" class="logo" />
+
+      <div>
+        <div class="title">Garimpei - Mercado Livre</div>
+        <div class="subtitle">Coleta automática de cookies de affilado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="status" id="status">
+        <div class="status-dot error"></div>
+        <span>Verificando sessão...</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="result" class="cookie-box">Aguardando cookies...</div>
+
+      <button id="copy" class="button">Copiar cookies</button>
+
+      <div id="copied" class="copy-ok">
+        Copiado pra área de transferência. ✓
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
