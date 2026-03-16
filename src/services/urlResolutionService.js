@@ -6,41 +6,47 @@ class UrlResolutionService {
    * @returns {string} - URL final limpa (sem trackings)
    */
   async resolveFinalUrl(url) {
-    if (url.includes('www.mercadolivre.com.br/') || url.includes('produto.mercadolivre.com.br/')) {
-      return this.cleanUrl(url);
-    }
-
     try {
       const response = await axios.get(url, {
         maxRedirects: 10,
         timeout: 10000,
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-          'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7'
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+          Accept:
+            'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
         },
         validateStatus: () => true
       });
 
-      let finalUrl = response.request.res.responseUrl || response.config.url;
+      const finalUrl =
+        response?.request?.res?.responseUrl || response.config.url;
 
       if (finalUrl.includes('/social/')) {
         const html = response.data;
 
-        const exactCardMatch = html.match(
-          /poly-card[^>]*>[\s\S]*?href=["'](https:\/\/(www|produto)\.mercadolivre\.com\.br\/[a-zA-Z0-9-]+\/(p\/)?MLB\d+[^"'\s]*)["']/i
+        const sectionMatch = html.match(
+          /<ul class="ui-recommendations-list__items-wrapper--single"[\s\S]*?<\/ul>/
         );
 
-        if (exactCardMatch) {
-          return this.cleanUrl(exactCardMatch[1]);
+        if (sectionMatch) {
+          const sectionHtml = sectionMatch[0];
+
+          const productMatch = sectionHtml.match(
+            /https:\/\/(produto|www)\.mercadolivre\.com\.br\/[^"' ]*MLB-?\d+[^"' ]*/i
+          );
+
+          if (productMatch) {
+            return this.cleanUrl(productMatch[0]);
+          }
         }
-        throw new Error('Nenhum poly-card válido encontrado no HTML da página social.');
+
+        throw new Error('Product not found in the expected section.');
       }
 
       return this.cleanUrl(finalUrl);
-
     } catch (error) {
-      console.error(`[UrlResolution] Erro ao resolver URL: ${error.message}`);
+      console.error(`[UrlResolution] Error resolving URL: ${error.message}`);
       return this.cleanUrl(url);
     }
   }

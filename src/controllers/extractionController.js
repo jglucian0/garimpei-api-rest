@@ -7,13 +7,13 @@ class ExtractionController {
       const { url, userId, tag } = req.body;
 
       if (!userId) {
-        return res.status(400).json({ erro: 'O campo "userId" é obrigatorio para gerar o link de afiliado.' })
+        return res.status(400).json({ erro: 'The "userId" field is required to generate the affiliate link.' })
       };
       if (!url) {
-        return res.status(400).json({ erro: 'O campo "url" é obrigatorio para gerar o link de afiliado.' })
+        return res.status(400).json({ erro: 'The "url" field is required to generate the affiliate link.' })
       };
       if (!tag) {
-        return res.status(400).json({ erro: 'O campo "tag" é obrigatorio para gerar o link de afiliado.' })
+        return res.status(400).json({ erro: 'The "tag" field is required to generate the affiliate link.' })
       };
 
       const isMercadoLivre =
@@ -22,7 +22,7 @@ class ExtractionController {
 
       if (!isMercadoLivre) {
         return res.status(400).json({
-          error: 'Marketplace não suportado. Atualmente suportamos apenas links do Mercado Livre (incluindo meli.la).'
+          error: 'Marketplace not supported. We currently only support links from Mercado Libre (including meli.la).'
         });
       };
 
@@ -33,7 +33,7 @@ class ExtractionController {
       try {
         affiliateLink = await affiliateService.generateAffiliateLink(productData.url, userId, tag);
       } catch (affiliateError) {
-        console.warn(`[API Aviso] Falha ao gerar link de afiliado: ${affiliateError.message}`);
+        console.warn(`[API Warning] Failed to generate affiliate link:: ${affiliateError.message}`);
       }
 
       const responsePayload = {
@@ -51,13 +51,13 @@ class ExtractionController {
 
       return res.status(200).json(responsePayload);
     } catch (error) {
-      console.error(`[ExtractionController] Erro Fatal: ${error.message}`);
+      console.error(`[ExtractionController] Fatal Error: ${error.message}`);
 
       if (error.message === 'COOKIES_NOT_FOUND') {
-        return res.status(401).json({ error: 'Cookies não encontrados ou expirados. Realize o upload novamente na rota /config/cookies.' });
+        return res.status(401).json({ error: 'Cookies not found or expired. Please upload them again to the /config/cookies path.' });
       }
 
-      return res.status(500).json({ error: 'Erro interno ao tentar extrair dados do produto.' });
+      return res.status(500).json({ error: 'Internal error while trying to extract product data.' });
     }
   }
 }
