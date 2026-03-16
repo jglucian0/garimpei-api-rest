@@ -90,7 +90,7 @@ To make cookie collection easier and cleaner for the user, we implemented a cust
 
 **How to use:**
 
-1. **Install:** Add the extension to your Chrome browser [Clicking Here](#).
+1. **Install:** Add the extension to your Chrome browser [Clicking Here](#) (i didn't upload the extension to Google. But it's located in the project's root directory; you just need to import it into your browser.).
 2. **Log in:** Access your Mercado Livre Affiliates account (we recommend using a _Collaborator_ account for security).
 3. **Copy:** Click the extension icon in your browser's top right corner and click **"Copy Token"**.
 4. **Configure:** Send the copied data along with your affiliate tag to our `/api/v1/config/cookies` endpoint.
@@ -278,7 +278,7 @@ Para facilitar a coleta de cookies de forma limpa, implementámos uma extensão 
 
 **Como utilizar:**
 
-1. **Instale:** Adicione a extensão ao seu navegador Chrome [Clicando Aqui](#).
+1. **Instale:** Adicione a extensão ao seu navegador Chrome [Clicando Aqui](#) (não realizei upload da extenção no google. Mas ela se encontra na raiz do projeto, basta importala em seu navegador).
 2. **Faça Login:** Aceda à sua conta de Afiliado no Mercado Livre (recomendamos o uso de uma conta de _Colaborador_ por questões de segurança).
 3. **Copie:** Clique no ícone da extensão no canto superior direito do seu navegador e, em seguida, em **"Copiar Token"**.
 4. **Configure:** Envie os dados copiados juntamente com a sua tag de afiliado para o nosso endpoint `/api/v1/config/cookies`.
