@@ -53,7 +53,9 @@ class ExtractionController {
     } catch (error) {
       console.error(`[ExtractionController] Fatal Error: ${error.message}`);
 
-      if (error.message === 'COOKIES_NOT_FOUND') return res.status(401).json({ error: 'Cookies not found.' });
+      if (error.message === 'ML_COOKIES_NOT_FOUND') return res.status(401).json({ error: 'Mercado Livre cookies not found or expired.' });
+      if (error.message === 'ML_TAG_NOT_FOUND') return res.status(401).json({ error: 'Mercado Livre tag not configured.' });
+      if (error.message === 'AMAZON_TAG_NOT_FOUND') return res.status(401).json({ error: 'Amazon configuration not found for this user.' });
       if (error.message === 'TAG_NOT_FOUND_IN_DB') return res.status(400).json({ error: 'Missing affiliate tag.' });
       if (error.message === 'NO_SSID') return res.status(401).json({ error: 'Invalid session (SSID missing). Please log in again.' });
       if (error.message === 'REQUEST_FAILED' || error.message === 'INVALID_API_RESPONSE') return res.status(502).json({ error: 'Failed to communicate with the Marketplace API.' });

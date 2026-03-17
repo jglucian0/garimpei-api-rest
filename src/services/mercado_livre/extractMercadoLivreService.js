@@ -9,10 +9,10 @@ class ScraperService {
 
     const url = await urlResolutionService.resolveFinalUrl(rawUrl);
 
-    const userConfig = await userConfigRepository.getUserConfigs(userId);
+    const userConfig = await userConfigRepository.getUserConfigs(userId, 'ML');
 
     if (!userConfig || !userConfig.cookies || !userConfig.cookies.length) {
-      throw new Error('COOKIES_NOT_FOUND');
+      throw new Error('ML_COOKIES_NOT_FOUND');
     }
 
     const cookies = userConfig.cookies;
