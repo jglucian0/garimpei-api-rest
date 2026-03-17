@@ -42,6 +42,32 @@ class ConfigController {
       return res.status(400).json({ error: error.message });
     }
   }
+
+  async uploadAmazonConfig(req, res) {
+    try {
+      const { userId, tag } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({ error: 'The userId field is mandatory.' });
+      }
+
+      if (!tag) {
+        return res.status(400).json({ error: 'The tag field is mandatory for generating Amazon affiliate links.' });
+      }
+
+      // Salva no banco com marketplace 'AMAZON' e cookies vazios '[]'
+      await userConfigRepository.saveUserConfigs(userId, 'AMAZON', [], tag);
+
+      return res.status(200).json({
+        message: 'Amazon Tag successfully validated and saved in the database!',
+        active: true
+      });
+
+    } catch (error) {
+      console.error('[ConfigController] Error:', error.message);
+      return res.status(500).json({ error: 'Internal error while saving Amazon configuration.' });
+    }
+  }
 }
 
 module.exports = new ConfigController();
