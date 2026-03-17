@@ -61,6 +61,8 @@ Git
 
 PostgreSQL Instance (Neon DB account recommended)
 
+Docker and Docker Compose
+
 <h3>Cloning</h3>
 
 ```bash
@@ -80,11 +82,23 @@ APP_URL=http://localhost:3001
 
 <h3>Starting</h3>
 
+1. For Local Development (Fast reloading):
+
 ```bash
 cd garimpei-api
 npm install   # To run in development
 npm run dev   # To run tests
 npm test
+```
+
+2. For Production / VPS (Dockerized):
+   The Docker setup automatically installs a lightweight Linux environment along with all necessary Chrome/Puppeteer dependencies.
+
+```bash
+npm run docker:build  # Builds the image and starts the container
+npm run docker:up     # Starts the container in detached mode (background)
+npm run docker:logs   # Attach to container logs
+npm run docker:down   # Stops and removes the container
 ```
 
 <h2 id="extension">🧩 Chrome Extension (Cookie Collector)</h2>
@@ -277,6 +291,8 @@ Git
 
 PostgreSQL Instance (Conta no Neon DB recomendada)
 
+Docker e Docker Compose
+
 <h3>Cloning</h3>
 
 ```bash
@@ -296,11 +312,23 @@ APP_URL=http://localhost:3001
 
 <h3>Starting</h3>
 
+1. Para Desenvolvimento Local (Fast reloading):
+
 ```bash
 cd garimpei-api
 npm install   # Para rodar em desenvolvimento
 npm run dev   # Para rodar os testes
 npm test
+```
+
+2. Para Produção / VPS (Dockerized):
+   A configuração do Docker instala automaticamente um ambiente Linux leve contendo todas as dependências necessárias para o Chrome/Puppeteer rodar perfeitamente.
+
+```bash
+npm run docker:build  # Constrói a imagem e inicia o container
+npm run docker:up     # Inicia o container em segundo plano (background)
+npm run docker:logs   # Acompanha os logs do servidor em tempo real
+npm run docker:down   # Desliga e remove o container
 ```
 
 <h2 id="extension-pt">🧩 Extensão do Chrome (Coletor de Cookies)</h2>
