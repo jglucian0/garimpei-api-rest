@@ -1,33 +1,41 @@
-const affiliateService = require('../../src/services/mercado_livre/affiliateMercadoLivreService')
-const scraperService = require('../../src/services/mercado_livre/extractMercadoLivreService')
+const affiliateMLService = require('../services/mercado_livre/affiliateMercadoLivreService');
+const scraperMLService = require('../services/mercado_livre/extractMercadoLivreService');
+const affiliateAmzService = require('../services/amazon/affiliateAmazonService');
+const scraperAmzService = require('../services/amazon/extractAmazonService');
 
 class ExtractionController {
   async extractProduct(req, res) {
     try {
       const { url, userId } = req.body;
 
-      if (!userId) {
-        return res.status(400).json({ erro: 'The "userId" field is required to generate the affiliate link.' })
-      };
-      if (!url) {
-        return res.status(400).json({ erro: 'The "url" field is required to generate the affiliate link.' })
-      };
+      if (!userId) return res.status(400).json({ erro: 'The "userId" field is required.' });
+      if (!url) return res.status(400).json({ erro: 'The "url" field is required.' });
 
-      const isMercadoLivre =
-        url.includes('mercadolivre.com.br') ||
-        url.includes('meli.la');
+      let marketplace = null;
+      if (url.includes('mercadolivre.com') || url.includes('meli.la')) {
+        marketplace = 'ML';
+      } else if (url.includes('amazon.com.br') || url.includes('amzn.to') || url.includes('a.co')) {
+        marketplace = 'AMAZON';
+      }
 
-      if (!isMercadoLivre) {
-        return res.status(400).json({
-          error: 'Marketplace not supported. We currently only support links from Mercado Libre (including meli.la).'
-        });
-      };
+      if (!marketplace) {
+        return res.status(400).json({ error: 'Marketplace not supported.' });
+      }
 
-      const productData = await scraperService.fetchProduct(url, userId);
+      let productData;
+      let affiliateLink;
 
-      const affiliateLink = await affiliateService.generateAffiliateLink(productData.url, userId);
+      if (marketplace === 'ML') {
+        productData = await scraperMLService.fetchProduct(url, userId);
+        affiliateLink = await affiliateMLService.generateAffiliateLink(productData.url, userId);
+      }
+      else if (marketplace === 'AMAZON') {
+        productData = await scraperAmzService.fetchProduct(url);
+        affiliateLink = await affiliateAmzService.generateAffiliateLink(productData.asin, userId);
+      }
 
       const responsePayload = {
+        marketplace: marketplace,
         imagePath: productData.imageUrl ? `![product_image](${productData.imageUrl})` : null,
         product: productData.title,
         link: affiliateLink,
@@ -36,8 +44,8 @@ class ExtractionController {
         current_price: productData.currentPriceValue,
         discount: productData.discountPercent ? `${productData.discountPercent}% OFF` : null,
         free_shipping: !!productData.shipping,
-        soldQuantity: productData.soldQuantity,
-        coupon_applied: productData.couponApplied
+        soldQuantity: productData.soldQuantity || null,
+        coupon_applied: productData.couponApplied || false
       };
 
       return res.status(200).json(responsePayload);
@@ -45,23 +53,12 @@ class ExtractionController {
     } catch (error) {
       console.error(`[ExtractionController] Fatal Error: ${error.message}`);
 
-      if (error.message === 'COOKIES_NOT_FOUND') {
-        return res.status(401).json({ error: 'Cookies not found or expired. Please upload them again to the /config/cookies path.' });
-      }
+      if (error.message === 'COOKIES_NOT_FOUND') return res.status(401).json({ error: 'Cookies not found.' });
+      if (error.message === 'TAG_NOT_FOUND_IN_DB') return res.status(400).json({ error: 'Missing affiliate tag.' });
+      if (error.message === 'NO_SSID') return res.status(401).json({ error: 'Invalid session (SSID missing). Please log in again.' });
+      if (error.message === 'REQUEST_FAILED' || error.message === 'INVALID_API_RESPONSE') return res.status(502).json({ error: 'Failed to communicate with the Marketplace API.' });
 
-      if (error.message === 'TAG_NOT_FOUND_IN_DB') {
-        return res.status(400).json({ error: 'Missing affiliate tag. Please configure your tag along with your cookies at the /config/cookies route.' });
-      }
-
-      if (error.message === 'NO_SSID') {
-        return res.status(401).json({ error: 'Invalid session (SSID missing). Please log in to Mercado Libre again and update your cookies.' });
-      }
-
-      if (error.message === 'REQUEST_FAILED' || error.message === 'INVALID_API_RESPONSE') {
-        return res.status(502).json({ error: 'Failed to communicate with the Mercado Libre API. The affiliate link could not be generated.' });
-      }
-
-      return res.status(500).json({ error: 'Internal error while trying to extract product data or generate the affiliate link.' });
+      return res.status(500).json({ error: 'Internal error while trying to extract product data.' });
     }
   }
 }

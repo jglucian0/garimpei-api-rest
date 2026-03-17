@@ -24,7 +24,9 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "pg": "^8.20.0",
-    "puppeteer": "^24.39.0"
+    "puppeteer": "^24.39.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
   "devDependencies": {
     "jest": "^30.3.0",

@@ -35,7 +35,6 @@ class CookieValidatorService {
       console.error('[CookieValidator] Network error when testing cookies:', error.message);
       return false;
     } finally {
-      // Limpa a memória fechando o contexto
       if (context) {
         await context.close().catch(() => { });
       }

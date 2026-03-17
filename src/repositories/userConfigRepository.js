@@ -36,10 +36,10 @@ class UserConfigRepository {
       const result = await pool.query(query, [userId]);
 
       if (result.rows.length === 0) {
-        return null; // Retorna null para indicar que não achou o usuário
+        return null;
       }
 
-      return result.rows[0]; // Retorna um objeto { cookies: [...], tag: "minha_tag" }
+      return result.rows[0];
     } catch (error) {
       console.error('[Repository] Error when fetching configs:', error.message);
       throw new Error('Failed to retrieve configurations from the database.');
