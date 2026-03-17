@@ -6,14 +6,15 @@ class UserConfigRepository {
     const query = `
       INSERT INTO user_marketplace_configs (user_id, marketplace, cookies, tag, updated_at)
       VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
-      ON CONFLICT (user_id) 
+      ON CONFLICT (user_id, marketplace) 
       DO UPDATE SET 
         cookies = EXCLUDED.cookies,
         tag = EXCLUDED.tag,
         updated_at = CURRENT_TIMESTAMP;
     `;
 
-    const values = [userId, marketplace, JSON.stringify(cookiesArray), tag];
+    // Garante que o marketplace vá em MAIÚSCULO para evitar duplicação por case-sensitive
+    const values = [userId, marketplace.toUpperCase(), JSON.stringify(cookiesArray), tag];
 
     try {
       await pool.query(query, values);
@@ -24,16 +25,17 @@ class UserConfigRepository {
     }
   }
 
-  async getUserConfigs(userId) {
+  async getUserConfigs(userId, marketplace) {
     const query = `
       SELECT cookies, tag 
       FROM user_marketplace_configs 
       WHERE user_id = $1 
+      AND marketplace = $2
       LIMIT 1;
     `;
 
     try {
-      const result = await pool.query(query, [userId]);
+      const result = await pool.query(query, [userId, marketplace.toUpperCase()]);
 
       if (result.rows.length === 0) {
         return null;

@@ -4,10 +4,14 @@ const userConfigRepository = require('../../repositories/userConfigRepository');
 class AffiliateService {
 
   async generateAffiliateLink(originalLink, userId) {
-    const userConfig = await userConfigRepository.getUserConfigs(userId);
+    const userConfig = await userConfigRepository.getUserConfigs(userId, 'ML');
 
     if (!userConfig || !userConfig.cookies || !userConfig.cookies.length) {
       throw new Error('COOKIES_NOT_FOUND');
+    }
+
+    if (!userConfig.tag) {
+      throw new Error('ML_TAG_NOT_FOUND');
     }
 
     const { cookies, tag } = userConfig;

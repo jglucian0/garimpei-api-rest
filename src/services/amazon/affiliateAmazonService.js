@@ -4,10 +4,10 @@ const crypto = require('crypto');
 
 class AffiliateAmazonService {
   async generateAffiliateLink(asin, userId) {
-    const userConfig = await userConfigRepository.getUserConfigs(userId);
+    const userConfig = await userConfigRepository.getUserConfigs(userId, 'AMAZON');
 
     if (!userConfig || !userConfig.tag) {
-      throw new Error('TAG_NOT_FOUND_IN_DB');
+      throw new Error('AMAZON_TAG_NOT_FOUND');
     }
 
     const amazonLongLink = `https://www.amazon.com.br/dp/${asin}?tag=${userConfig.tag}`;
