@@ -8,13 +8,13 @@ router.get('/:code', async (req, res) => {
     const originalUrl = await shortLinkRepository.getOriginalUrl(code);
 
     if (!originalUrl) {
-      return res.status(404).send('<h1>Link não encontrado ou expirado.</h1>');
+      return res.status(404).send('Link not found or expired.');
     }
 
     return res.redirect(301, originalUrl);
   } catch (error) {
     console.error(`[Redirect Error]: ${error.message}`);
-    return res.status(500).send('Erro interno do servidor.');
+    return res.status(500).send('Internal server error.');
   }
 });
 

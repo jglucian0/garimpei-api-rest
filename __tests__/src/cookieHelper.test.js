@@ -1,32 +1,38 @@
-const { validateAndParseCookies } = require('../../src/utils/cookieHelper');
+const { parseCookieHeader } = require('../../src/utils/cookieHelper');
 
 describe('Cookie Helper Utility', () => {
-  const mockValidContent =
-    "# Netscape HTTP Cookie File\n" +
-    ".mercadolivre.com.br\tTRUE\t/\tTRUE\t1804805183\t_d2id\teyJpZ...\n" +
-    "www.mercadolivre.com.br\tFALSE\t/\tFALSE\t1802435793\ttooltip\ttrue";
+  // 1. Mock do formato novo (Raw Cookie String da nossa extensão)
+  const mockValidContent = "ssid=meu_token_secreto_aqui; _d2id=abc12345; tooltip=true";
 
-  const mockInvalidContent = `This is not a valid cookie file`;
+  // 2. Mock sem o SSID (simulando um usuário deslogado)
+  const mockNoIdentity = "_d2id=abc12345; tooltip=true";
 
-  const mockNoIdentity =
-    "# Netscape HTTP Cookie File\n" +
-    "www.mercadolivre.com.br\tFALSE\t/\tFALSE\t1802435793\ttooltip\ttrue";
+  // 3. Mocks de dados inválidos
+  const mockInvalidType = 12345; // Passando número em vez de string
+  const mockEmptyString = "   ;   "; // String vazia/apenas espaços
 
-  test('Must convert Netscape text to Puppeteer compatible JSON Array', () => {
-    const cookies = validateAndParseCookies(mockValidContent);
+  test('Must convert raw cookie string to Puppeteer compatible JSON Array', () => {
+    const cookies = parseCookieHeader(mockValidContent);
+
     expect(cookies).toBeInstanceOf(Array);
-    expect(cookies.length).toBe(2);
+    expect(cookies.length).toBe(3); // Deve achar ssid, _d2id e tooltip
     expect(cookies[0].domain).toBe('.mercadolivre.com.br');
-    expect(cookies[0].name).toBe('_d2id');
+    expect(cookies[0].name).toBe('ssid');
+    expect(cookies[0].value).toBe('meu_token_secreto_aqui');
   });
 
-  test('Must reject cookies without identity tokens', () => {
-    expect(() => validateAndParseCookies(mockNoIdentity))
-      .toThrow('The file does not contain valid session cookies');
+  test('Must reject cookies without ssid (identity token)', () => {
+    expect(() => parseCookieHeader(mockNoIdentity))
+      .toThrow('Cookie does not contain ssid (not logged session).');
   });
 
-  test('Must reject text that does not have a valid format', () => {
-    expect(() => validateAndParseCookies(mockInvalidContent))
-      .toThrow('Invalid format.');
+  test('Must reject invalid data types', () => {
+    expect(() => parseCookieHeader(mockInvalidType))
+      .toThrow('Invalid cookie format.');
+  });
+
+  test('Must reject empty cookies string', () => {
+    expect(() => parseCookieHeader(mockEmptyString))
+      .toThrow('No cookies were detected.');
   });
 });

@@ -1,4 +1,4 @@
-const urlResolutionService = require('../../src/services/urlResolutionService');
+const urlResolutionService = require('../../../src/services/urlResolutionService');
 
 describe('UrlResolutionService Isolated Test', () => {
 

@@ -7,8 +7,8 @@ class ShortLinkRepository {
     try {
       await pool.query(query, [code, originalUrl, userId]);
     } catch (error) {
-      console.error('[Repository] Erro ao salvar short link:', error.message);
-      throw new Error('Falha ao salvar o link no banco de dados.');
+      console.error('[Repository] Error saving short link:', error.message);
+      throw new Error('Failed to save link to database.');
     }
   }
 
@@ -19,8 +19,8 @@ class ShortLinkRepository {
       const result = await pool.query(query, [code]);
       return result.rows.length ? result.rows[0].original_url : null;
     } catch (error) {
-      console.error('[Repository] Erro ao buscar short link:', error.message);
-      throw new Error('Falha ao buscar o link no banco de dados.');
+      console.error('[Repository] Error when fetching short link:', error.message);
+      throw new Error('Failed to fetch the link from the database.');
     }
   }
 }

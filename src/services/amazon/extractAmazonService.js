@@ -1,11 +1,14 @@
 const sessionSingleton = require('../sessionSingleton');
+const urlResolutionService = require('../urlResolutionService');
 
 class ExtractAmazonService {
   async fetchProduct(rawUrl) {
-    const asinMatch = rawUrl.match(/(?:dp|o|ASIN|gp\/product|gp\/offer-listing|aw\/d)\/([a-zA-Z0-9]{10})/i);
+    const finalUrl = await urlResolutionService.resolveFinalUrl(rawUrl);
+
+    const asinMatch = finalUrl.match(/(?:dp|o|ASIN|gp\/product|gp\/offer-listing|aw\/d)\/([a-zA-Z0-9]{10})/i);
 
     if (!asinMatch) {
-      throw new Error('Não foi possível encontrar o ASIN no link da Amazon. Verifique se é um link de produto válido.');
+      throw new Error("The ASIN could not be found in the Amazon link. Make sure it's a valid product link.");
     }
 
     const asin = asinMatch[1];
@@ -27,7 +30,6 @@ class ExtractAmazonService {
       });
 
       const productData = await page.evaluate(() => {
-
         const parsePrice = (text) => {
           if (!text || !text.trim()) return null;
           const cleaned = text.replace(/[^0-9,]/g, '').replace(',', '.');
@@ -88,7 +90,7 @@ class ExtractAmazonService {
         }
 
         return {
-          title: titleEl ? titleEl.textContent.trim() : 'Título não encontrado',
+          title: titleEl ? titleEl.textContent.trim() : 'Title not found',
           currentPriceValue: currentPriceValue,
           oldPriceValue: oldPriceValue,
           discountPercent: discountPercent,
