@@ -64,7 +64,7 @@ PostgreSQL Instance (Neon DB account recommended)
 <h3>Cloning</h3>
 
 ```bash
-git clone [https://github.com/jglucian0/garimpei-api-rest](https://github.com/jglucian0/garimpei-api-rest)
+git clone https://github.com/jglucian0/garimpei-api-rest
 ```
 
 <h3>Config .env variables</h3>
@@ -75,6 +75,7 @@ Create a .env file in the root of the project with the following variables:
 PORT=3001
 DATABASE_URL=postgres://user:password@neon-db-url/dbname
 NODE_ENV=development
+APP_URL=http://localhost:3001
 ```
 
 <h3>Starting</h3>
@@ -162,7 +163,7 @@ _Note: The API automatically detects whether the URL belongs to Mercado Livre or
 ```json
 {
   "userId": "garimpei_user_01",
-  "url": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)"
+  "url": "https://meli.la/2NtGUez"
 }
 ```
 
@@ -173,8 +174,8 @@ _Note: The API automatically detects whether the URL belongs to Mercado Livre or
   "marketplace": "ML",
   "imagePath": "![product_image](https://http2.mlstatic.com/D_NQ_NP_2X_608153-MLB97012029091_112025-F-relogio-masculino-de-pulso-social-classico-casual-original.webp)",
   "product": "Relógio Masculino De Pulso Social Clássico Casual Original",
-  "link": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)",
-  "linkOriginal": "[https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM](https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM)",
+  "link": "https://meli.la/2NtGUez",
+  "linkOriginal": "https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM",
   "original_price": 99,
   "current_price": 63.36,
   "discount": "36% OFF",
@@ -279,7 +280,7 @@ PostgreSQL Instance (Conta no Neon DB recomendada)
 <h3>Cloning</h3>
 
 ```bash
-git clone [https://github.com/jglucian0/garimpei-api-rest](https://github.com/jglucian0/garimpei-api-rest)
+git clone https://github.com/jglucian0/garimpei-api-rest
 ```
 
 <h3>Config .env variables</h3>
@@ -290,6 +291,7 @@ Crie um ficheiro .env na raiz do projeto com as seguintes variáveis:
 PORT=3001
 DATABASE_URL=postgres://user:password@neon-db-url/dbname
 NODE_ENV=development
+APP_URL=http://localhost:3001
 ```
 
 <h3>Starting</h3>
@@ -377,7 +379,7 @@ _Nota: A API detecta automaticamente se a URL pertence ao Mercado Livre ou Amazo
 ```json
 {
   "userId": "garimpei_user_01",
-  "url": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)"
+  "url": "https://meli.la/2NtGUez"
 }
 ```
 
@@ -388,8 +390,8 @@ _Nota: A API detecta automaticamente se a URL pertence ao Mercado Livre ou Amazo
   "marketplace": "ML",
   "imagePath": "![product_image](https://http2.mlstatic.com/D_NQ_NP_2X_608153-MLB97012029091_112025-F-relogio-masculino-de-pulso-social-classico-casual-original.webp)",
   "product": "Relógio Masculino De Pulso Social Clássico Casual Original",
-  "link": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)",
-  "linkOriginal": "[https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM](https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM)",
+  "link": "https://meli.la/2NtGUez",
+  "linkOriginal": "https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM",
   "original_price": 99,
   "current_price": 63.36,
   "discount": "36% OFF",
