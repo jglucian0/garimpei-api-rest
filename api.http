@@ -19,3 +19,24 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:3001/api/v1/config/cookies
+Content-Type: application/json
+
+{
+  "userId": "garimpei_user_01",
+  "cookies": "ssid=ghy-031018-y2KA6dKdeVjPvre8ltP6haVZREA1Vx-__-757601996-__-1867876738920--RRR_0-RRR_0; _d2id=8b86aec1-0669-4da3-923c-69b7f72d75f9; _csrf=eGDBgAzFovLMuunanq_ZnAuv; x-meli-session-id=armor.426b8af2d20f89c8bcb0aadee63843da4170d4b8735f434a6ec6f74af8be42a4c52ead02057547a7218b231829efdd6350136dd4878923cf0095711e627b17259339aa28bcb0a71cef6a6eca9c75f45475fb4b6281c2d803194beceb03a596ee.8b940b62a6a06b29d70a0a930bbb4c9d; ftid=lvs7e88uapMTqPdUIbn6ZGtxIRAc0Vwn-1769963432595",
+  "tag": "garimpei"
+}
+
+###
+
+POST http://localhost:3001/api/v1/config/api
+Content-Type: application/json
+
+{
+  "userId": "garimpei_user_01",
+  "tag": "ogarimpei-20"
+}
+
+###
