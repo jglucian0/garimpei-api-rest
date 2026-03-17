@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch src/server.js",
-    "test": "jest --watchAll"
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "docker:up": "docker compose up -d",
+    "docker:build": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "repository": {
     "type": "git",
