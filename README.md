@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-<i>This project was conceived to solve a real pain point: the slowness of the product curation process for affiliates across multiple marketplaces. Unlike general-purpose scrapers, Garimpei focuses on "the essentials done right," delivering only the critical data required for conversion (Prices, Title, Image (with markdown), and Affiliate Link) quickly and securely, eliminating exhaustive manual work for affiliates.</i>
+<i>This project was conceived to solve a real pain point: the slowness of the product curation process for affiliates across multiple marketplaces (Mercado Livre and Amazon). Unlike general-purpose scrapers, Garimpei focuses on "the essentials done right," delivering only the critical data required for conversion (Prices, Title, Image (with markdown), and Affiliate Link) quickly and securely, eliminating exhaustive manual work for affiliates.</i>
 </p>
 
 <h2 id="tech">💻 Technologies</h2>
@@ -29,9 +29,9 @@ Node.js (Main Runtime)
 
 Express (Framework web)
 
-Puppeteer (WebScraping for Mercado Livre only)
+Puppeteer (WebScraping for Mercado Livre and Amazon)
 
-PostgreSQL / Neon DB (Database for JSONB cookie storage)
+PostgreSQL / Neon DB (Database for JSONB cookie storage and Short Links)
 
 Jest (Unit and integration testing)
 
@@ -42,10 +42,12 @@ Docker (Containerization for scalable deployment)
 To ensure speed and resilience, the API implements several architectural patterns:
 
 - **Isolated Contexts:** Each extraction runs in a secure, anonymous browser context `createBrowserContext()`, preventing session leaking between users and ensuring accurate affiliate metrics.
-- **URL Resolution Service (Unshorter):** A lightweight Axios-based service that automatically resolves shortened links (like `meli.la` or `/sec/`) and extracts the final product URL from social profile pages via Regex, saving Chromium resources.
+- **Multi-Marketplace Routing (Strategy Pattern):** The extraction controller is smart enough to auto-detect the provided URL (Mercado Livre or Amazon) and route it to the specific scraping service automatically.
+- **Smart Link Resolver:** Automatically resolves and follows shortened links (`amzn.to`, `a.co`, `meli.la`) to their final URLs via native HTTP requests before launching the Puppeteer engine, saving huge amounts of memory and time.
+- **Built-in URL Shortener:** Generates clean, secure, and trackable short links (e.g., `/s/A7x9P`) for Amazon products to protect affiliate tags and ensure reliable HTTP 301 redirects, fully independent of third-party APIs.
 - **Separation of Concerns (SoC):** DOM extraction logic is completely decoupled from the Puppeteer engine, making maintenance and CSS selector updates much easier.
 - **Dynamic Affiliate Tags:** The affiliate generation service supports dynamic tags per request, allowing users to track different campaigns in real-time.
-- **Stable Unit Testing:** Comprehensive Jest test suite using Puppeteer Mocks to ensure the logic runs smoothly without hitting real servers.
+- **Stable Unit Testing:** Comprehensive Jest test suite using Puppeteer and Axios Mocks to ensure the logic runs smoothly without hitting real servers.
 
 <h2 id="started">🚀 Getting started</h2>
 
@@ -106,7 +108,9 @@ To make cookie collection easier and cleaner for the user, we implemented a cust
 | route                                  | description                                                                                                 |
 | -------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | <kbd>POST /api/v1/config/cookies</kbd> | validates and saves Mercado Livre cookies and tag in the database. [response details](#post-cookies-detail) |
+| <kbd>POST /api/v1/config/api</kbd>     | saves Amazon Affiliate Tag (Tracking ID) in the database. [response details](#post-amazon-api-detail)       |
 | <kbd>POST /api/v1/extract</kbd>        | Performs data extraction from a product using isolated context [request details](#post-extract-detail)      |
+| <kbd>GET /s/:code</kbd>                | Built-in Short Link Redirector. Performs HTTP 301 redirect to the original Amazon affiliate link.           |
 
 <h3 id="post-cookies-detail">POST /api/v1/config/cookies</h3>
 
@@ -129,7 +133,29 @@ To make cookie collection easier and cleaner for the user, we implemented a cust
 }
 ```
 
+<h3 id="post-amazon-api-detail">POST /api/v1/config/api (Amazon)</h3>
+
+**_REQUEST BODY_**
+
+```json
+{
+  "userId": "garimpei_user_01",
+  "tag": "ogarimpei-20"
+}
+```
+
+**_RESPONSE_**
+
+```json
+{
+  "message": "Amazon Tag successfully validated and saved in the database!",
+  "active": true
+}
+```
+
 <h3 id="post-extract-detail">POST /api/v1/extract</h3>
+
+_Note: The API automatically detects whether the URL belongs to Mercado Livre or Amazon and routes the extraction accordingly._
 
 **_REQUEST BODY_**
 
@@ -144,6 +170,7 @@ To make cookie collection easier and cleaner for the user, we implemented a cust
 
 ```json
 {
+  "marketplace": "ML",
   "imagePath": "![product_image](https://http2.mlstatic.com/D_NQ_NP_2X_608153-MLB97012029091_112025-F-relogio-masculino-de-pulso-social-classico-casual-original.webp)",
   "product": "Relógio Masculino De Pulso Social Clássico Casual Original",
   "link": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)",
@@ -207,7 +234,7 @@ Open a Pull Request detailing the changes.
 </p>
 
 <p align="center">
-<i>Este projeto foi concebido para resolver uma dor real: a morosidade no processo de curadoria de produtos para afiliados de múltiplos marketplaces. Diferente de scrapers generalistas, o Garimpei foca no "essencial bem feito", entregando apenas os dados críticos necessários para conversão (Preços, Título, Imagem (com markdown) e Link de affiliado) de forma rápida e segura, eliminando o trabalho manual exaustivo dos afiliados.</i>
+<i>Este projeto foi concebido para resolver uma dor real: a morosidade no processo de curadoria de produtos para afiliados de múltiplos marketplaces (Mercado Livre e Amazon). Diferente de scrapers generalistas, o Garimpei foca no "essencial bem feito", entregando apenas os dados críticos necessários para conversão (Preços, Título, Imagem (com markdown) e Link de affiliado) de forma rápida e segura, eliminando o trabalho manual exaustivo dos afiliados.</i>
 </p>
 
 <h2 id="tech">💻 Tecnologias</h2>
@@ -216,9 +243,9 @@ Node.js (Runtime principal)
 
 Express (Framework web)
 
-Puppeteer (WebScraping para Mercado Livre apenas)
+Puppeteer (WebScraping para Mercado Livre e Amazon)
 
-PostgreSQL / Neon DB (Banco de dados para armazenamento de cookies JSONB)
+PostgreSQL / Neon DB (Banco de dados para armazenamento de cookies JSONB e Links Curtos)
 
 Jest (Testes unitários e de integração)
 
@@ -229,11 +256,13 @@ Docker (Containerização para deploy escalável)
 Para garantir velocidade e resiliência, a API implementa os seguintes padrões arquiteturais:
 
 - **Contextos Isolados:** Cada extração ocorre num contexto anónimo do navegador `createBrowserContext()`, evitando o vazamento de sessão entre os clientes do SaaS e protegendo métricas de afiliados.
-- **Serviço de Resolução de URL (Unshorter):** Uma camada ultra leve via Axios que processa links encurtados (`meli.la`, etc.) e extrai o link real do produto de páginas sociais via Regex antes de abrir o Chromium.
-- **Separação de Responsabilidades:** A lógica de extração do DOM (`mercadoLivreExtractor.js`) é totalmente isolada do motor do Puppeteer, facilitando manutenções futuras em seletores CSS.
+- **Roteamento Multi-Marketplace (Strategy Pattern):** O controller de extração é inteligente para detectar automaticamente a URL fornecida (Mercado Livre ou Amazon) e direcionar para o serviço de raspagem correto.
+- **Resolvedor Inteligente de Links:** Segue automaticamente os redirecionamentos de links encurtados (`amzn.to`, `a.co`, `meli.la`) via requisições HTTP nativas antes de acionar o motor do Puppeteer, poupando recursos do servidor.
+- **Encurtador Próprio Embutido:** Gera links curtos, seguros e rastreáveis (ex: `/s/A7x9P`) para produtos da Amazon, protegendo a tag do afiliado e garantindo redirecionamentos HTTP 301 eficientes, sem depender de APIs de terceiros.
+- **Separação de Responsabilidades:** A lógica de extração do DOM (`mercadoLivreExtractor.js` / `extractAmazonService.js`) é totalmente isolada do motor do Puppeteer, facilitando manutenções futuras em seletores CSS.
 - **Tags Dinâmicas de Afiliado:** O serviço de requisição de links suporta injeção de tags em tempo real, flexibilizando as campanhas dos utilizadores.
-- **Testes Unitários Estáveis:** Cobertura de testes com Jest utilizando "Mocks" do Puppeteer, permitindo testar a lógica complexa de negócios sem risco de timeout ou bloqueios de CAPTCHA do Mercado Livre.
-- **Coleta Fácil de Cookies:** Utilizamos uma extensão personalizada do Chrome para coletar os cookies de sessão do Mercado Livre de forma simples e limpa, melhorando a experiência do utilizador e a funcionalidade do sistema.
+- **Testes Unitários Estáveis:** Cobertura de testes com Jest utilizando "Mocks" do Puppeteer e Axios, permitindo testar a lógica complexa de negócios sem risco de timeout.
+- **Coleta Fácil de Cookies:** Utilizamos uma extensão personalizada do Chrome para coletar os cookies de sessão do Mercado Livre de forma simples e limpa.
 
 <h2 id="started">🚀 Primeiros Passos</h2>
 
@@ -291,10 +320,12 @@ Para facilitar a coleta de cookies de forma limpa, implementámos uma extensão 
 
 <h2 id="routes">📍 API Endpoints</h2>
 ​
-| route | description  
-|----------------------|-----------------------------------------------------
-| <kbd>POST /api/v1/config/cookies</kbd> | validates and saves Mercado Livre cookies in the database. [response details](#post-cookies-detail-pt)
-| <kbd>POST /api/v1/extract</kbd> | Performs data extraction from a product using isolated context [request details](#post-extract-detail-pt)
+| route                                  | description                                                                                                 |
+|----------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| <kbd>POST /api/v1/config/cookies</kbd> | validates and saves Mercado Livre cookies in the database. [response details](#post-cookies-detail-pt)      |
+| <kbd>POST /api/v1/config/api</kbd>     | saves Amazon Affiliate Tag in the database. [response details](#post-amazon-api-detail-pt)                  |
+| <kbd>POST /api/v1/extract</kbd>        | Performs data extraction from a product using isolated context [request details](#post-extract-detail-pt)   |
+| <kbd>GET /s/:code</kbd>                | Built-in Short Link Redirector. Performs HTTP 301 redirect to the original Amazon affiliate link.           |
 
 <h3 id="post-cookies-detail-pt">POST /api/v1/config/cookies</h3>
 
@@ -317,7 +348,29 @@ Para facilitar a coleta de cookies de forma limpa, implementámos uma extensão 
 }
 ```
 
+<h3 id="post-amazon-api-detail-pt">POST /api/v1/config/api (Amazon)</h3>
+
+**_REQUEST BODY_**
+
+```json
+{
+  "userId": "garimpei_user_01",
+  "tag": "ogarimpei-20"
+}
+```
+
+**_RESPONSE_**
+
+```json
+{
+  "message": "Amazon Tag successfully validated and saved in the database!",
+  "active": true
+}
+```
+
 <h3 id="post-extract-detail-pt">POST /api/v1/extract</h3>
+
+_Nota: A API detecta automaticamente se a URL pertence ao Mercado Livre ou Amazon e roteia a extração._
 
 **_REQUEST BODY_**
 
@@ -332,6 +385,7 @@ Para facilitar a coleta de cookies de forma limpa, implementámos uma extensão 
 
 ```json
 {
+  "marketplace": "ML",
   "imagePath": "![product_image](https://http2.mlstatic.com/D_NQ_NP_2X_608153-MLB97012029091_112025-F-relogio-masculino-de-pulso-social-classico-casual-original.webp)",
   "product": "Relógio Masculino De Pulso Social Clássico Casual Original",
   "link": "[https://meli.la/2NtGUez](https://meli.la/2NtGUez)",
