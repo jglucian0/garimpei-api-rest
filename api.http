@@ -1,73 +1,82 @@
-POST http://localhost:3001/api/v1/extract
+### Configurações de Ambiente e Segurança
+@baseUrl = http://localhost:3001/api/v1
+@apiKey = garimpei_secret_hash_99cc22
+
+# ==========================================
+# EXTRAÇÃO DE PRODUTOS (Scrapers)
+# ==========================================
+
+### Extração Amazon
+POST {{baseUrl}}/extract
 Content-Type: application/json
+x-api-key: {{apiKey}}
 
 {
   "userId": "garimpei_user_01",
   "url": "https://amzn.to/4cRA99K"
-  //"url": "https://www.amazon.com.br/Proteínas-Chocolate-Banana-Brasil-Unidades/dp/B07XGM1BM7/ref=pd_bxgy_thbs_d_sccl_1/144-1848423-5967805?pd_rd_w=Jgz1v&content-id=amzn1.sym.ea5263f5-901f-4a74-9b73-3fc0e530788d&pf_rd_p=ea5263f5-901f-4a74-9b73-3fc0e530788d&pf_rd_r=Y24WAYAF5FHTDT9NDSGJ&pd_rd_wg=uxCTV&pd_rd_r=cb692e48-1dc2-4479-bff9-e16014fb4881&pd_rd_i=B07XGM1BM7&psc=1"
 }
 
-###
-
-POST http://localhost:3001/api/v1/extract
+### Extração Mercado Livre
+POST {{baseUrl}}/extract
 Content-Type: application/json
+x-api-key: {{apiKey}}
 
 {
   "userId": "garimpei_user_01",
-  "url": "https://www.mercadolivre.com.br/creatina-monohidratada-250g-growth-supplements-forca-sabor-sem-sabor/p/MLB32376444#polycard_client=recommendations_home_navigation-recommendations&reco_backend=machinalis-homes-univb-equivalent-offer&wid=MLB5652669256&reco_client=home_navigation-recommendations&reco_item_pos=1&reco_backend_type=function&reco_id=c90110ba-2a24-4e87-94c3-390869d9a4ca&sid=recos&c_id=/home/navigation-recommendations/element&c_uid=fdedbb60-d0bc-4b6a-b3e0-7641a00c482f"
-  //"url": "https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM#reco_item_pos=1&reco_backend=item_decorator&reco_backend_type=function&reco_client=home_items-decorator-legacy&reco_id=bf280dd9-cb57-4ca2-8d6e-bb015c459e77&reco_model=&c_id=/home/navigation-trends-recommendations/element&c_uid=8ce38009-add0-4581-9385-9d9b8c74ccae&da_id=navigation_trend&da_position=1&id_origin=/home/dynamic_access&da_sort_algorithm=ranker"
+  "url": "https://www.mercadolivre.com.br/creatina-monohidratada-250g-growth-supplements-forca-sabor-sem-sabor/p/MLB32376444"
 }
 
-###
-
-POST http://localhost:3001/api/v1/config/cookies
+### Extração Centauro
+POST {{baseUrl}}/extract
 Content-Type: application/json
+x-api-key: {{apiKey}}
 
 {
   "userId": "garimpei_user_01",
-  "cookies": "ssid=ghy-031018-y2KA6dKdeVjPvre8ltP6haVZREA1Vx-__-757601996-__-1867876738920--RRR_0-RRR_0; _d2id=8b86aec1-0669-4da3-923c-69b7f72d75f9; _csrf=eGDBgAzFovLMuunanq_ZnAuv; x-meli-session-id=armor.426b8af2d20f89c8bcb0aadee63843da4170d4b8735f434a6ec6f74af8be42a4c52ead02057547a7218b231829efdd6350136dd4878923cf0095711e627b17259339aa28bcb0a71cef6a6eca9c75f45475fb4b6281c2d803194beceb03a596ee.8b940b62a6a06b29d70a0a930bbb4c9d; ftid=lvs7e88uapMTqPdUIbn6ZGtxIRAc0Vwn-1769963432595",
+  "url": "https://www.centauro.com.br/regata-nike-dri-fit-legend-masculina-m0vbj8-mktp.html?cor=02&af_viewthrough_lookback=1h&source_caller=api&pid=social-com&is_retargeting=true&af_click_lookback=1h&utm_content=achadosoriginais&utm_source=social-com&shortlink=6wt8p4bq&utm_medium=network&af_adset=achadosoriginais&utm_campaign=social-com-divulgacao_achadosoriginais&af_channel=network&c=social-com-divulgacao_achadosoriginais"
+}
+
+### Extração Nike
+POST {{baseUrl}}/extract
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "userId": "garimpei_user_01",
+  "url": "https://www.nike.com.br/camisa-brasil-jordan-ii-2026-27-jogador-masculina-097619.html?cor=01"
+}
+
+# ==========================================
+# CONFIGURAÇÕES DE AFILIADOS E SESSÃO
+# ==========================================
+
+### Upload de Cookies do Mercado Livre (Extensão)
+POST {{baseUrl}}/config/cookies
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "userId": "garimpei_user_01",
+  "cookies": "ssid=ghy-031018-y2KA6dKdeVjPvre8ltP6haVZREA1Vx-__-757601996; _d2id=8b86aec1-0669-4da3-923c-69b7f72d75f9; _csrf=eGDBgAzFovLMuunanq_ZnAuv",
   "tag": "garimpei"
 }
 
-###
-
-POST http://localhost:3001/api/v1/config/api
+### Configurar Tag de Afiliado Amazon (Tracking ID)
+POST {{baseUrl}}/config/api
 Content-Type: application/json
+x-api-key: {{apiKey}}
 
 {
   "userId": "garimpei_user_01",
   "tag": "ogarimpei-20"
 }
 
-###
-
-POST http://localhost:3001/api/v1/config/awin
+### Configurar ID de Afiliado AWIN (Nike/Centauro)
+POST {{baseUrl}}/config/awin
 Content-Type: application/json
+x-api-key: {{apiKey}}
 
 {
   "userId": "garimpei_user_01",
   "awinaffid": "2815810"
-  }
-
-###
-
-POST http://localhost:3001/api/v1/extract
-Content-Type: application/json
-
-{
-  "userId": "garimpei_user_01",
-  "url": "https://click.centauro.com.br/13Nl/6wt8p4bq"
-  //"url": "https://www.centauro.com.br/regata-nike-dri-fit-legend-masculina-m0vbj8-mktp.html?cor=51"
-  }
-
-###
-
-POST http://localhost:3001/api/v1/extract
-Content-Type: application/json
-
-{
-  "userId": "garimpei_user_01",
-  "url": "https://www.nike.com.br/camisa-brasil-jordan-ii-2026-27-jogador-masculina-097619.html?aw_affid=2815810&awc=17652_1773792226_941c611aa1849d412c1d4525a2cdaeda&utm_source=Zanox&utm_medium=2815810&utm_campaign=João+Gabriel+Luciano+da+Luz&utm_content=&utm_term=Communities+%26+UGC&af_channel=2815810"
-  }
-
-###
+}

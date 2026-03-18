@@ -53,11 +53,17 @@ describe('Scraper Service - Unit Tests', () => {
 
     const result = await scraperService.fetchProduct(
       'https://meli.la/curto',
-      'user_123'
+      {
+        userId: 'user_123',
+        marketplace: 'ML'
+      }
     );
 
     expect(urlResolutionService.resolveFinalUrl).toHaveBeenCalledWith('https://meli.la/curto');
-    expect(userConfigRepository.getUserConfigs).toHaveBeenCalledWith('user_123');
+    expect(userConfigRepository.getUserConfigs).toHaveBeenCalledWith(
+      { userId: 'user_123', marketplace: 'ML' },
+      'ML'
+    );
     expect(sessionSingleton.initBrowser).toHaveBeenCalled();
     expect(mockBrowser.createBrowserContext).toHaveBeenCalled();
     expect(mockContext.newPage).toHaveBeenCalled();
@@ -85,7 +91,10 @@ describe('Scraper Service - Unit Tests', () => {
     userConfigRepository.getUserConfigs.mockResolvedValue({ cookies: [] });
 
     await expect(
-      scraperService.fetchProduct('https://link.com', 'user_sem_cookie')
+      scraperService.fetchProduct(
+        'https://link.com',
+        { userId: 'user_sem_cookie', marketplace: 'ML' }
+      )
     ).rejects.toThrow('COOKIES_NOT_FOUND');
 
     expect(mockBrowser.createBrowserContext).not.toHaveBeenCalled();
@@ -104,7 +113,10 @@ describe('Scraper Service - Unit Tests', () => {
     mockPage.goto.mockRejectedValue(new Error('Navigation timeout'));
 
     await expect(
-      scraperService.fetchProduct('https://link.com', 'user_123')
+      scraperService.fetchProduct(
+        'https://link.com',
+        { userId: 'user_123', marketplace: 'ML' }
+      )
     ).rejects.toThrow('Navigation timeout');
 
     expect(mockContext.close).toHaveBeenCalled();

@@ -26,7 +26,10 @@ describe('AffiliateAmazonService', () => {
 
     const result = await affiliateAmazonService.generateAffiliateLink(asin, userId);
 
-    expect(userConfigRepository.getUserConfigs).toHaveBeenCalledWith(userId);
+    expect(userConfigRepository.getUserConfigs).toHaveBeenCalledWith(
+      userId,
+      'AMAZON'
+    );
     expect(shortLinkRepository.saveLink).toHaveBeenCalledWith(
       'aB3x9Q',
       'https://www.amazon.com.br/dp/B0BTYCRJSS?tag=ogarimpei-20',
@@ -40,6 +43,6 @@ describe('AffiliateAmazonService', () => {
 
     await expect(affiliateAmazonService.generateAffiliateLink('B0BTYCRJSS', 'user1'))
       .rejects
-      .toThrow('TAG_NOT_FOUND_IN_DB');
+      .toThrow('AMAZON_TAG_NOT_FOUND');
   });
 });

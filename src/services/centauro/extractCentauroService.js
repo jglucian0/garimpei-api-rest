@@ -1,11 +1,11 @@
 const sessionSingleton = require('../sessionSingleton');
 const urlResolutionService = require('../urlResolutionService');
-const extractNikeProductData = require('../../utils/nikeExtractor');
+const extractCentauroProductData = require('../../utils/centauroExtractor');
 
-class ExtractNikeService {
+class ExtractCentauroService {
   async fetchProduct(rawUrl) {
     const finalUrl = await urlResolutionService.resolveFinalUrl(rawUrl);
-    const cleanUrl = finalUrl;
+    const cleanUrl = finalUrl; // Preserva parâmetros de cor configurados no service
 
     let page;
 
@@ -15,18 +15,16 @@ class ExtractNikeService {
 
       await page.setViewport({ width: 1366, height: 768 });
 
-      // --- DIFERENÇA CRÍTICA PARA NIKE ---
-      // A Nike bloqueia se não houver um User-Agent explícito na aba e um Referer confiável
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
-
+      // Mantendo os headers leves exatamente como na Nike
       await page.setExtraHTTPHeaders({
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Referer': 'https://www.google.com/'
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7'
       });
 
       await page.setRequestInterception(true);
       page.on('request', (req) => {
+        // Permitimos o essencial para o fingerprint parecer real
         const allowedTypes = ['document', 'script', 'xhr', 'fetch', 'stylesheet', 'image', 'font'];
+
         if (allowedTypes.includes(req.resourceType())) {
           req.continue();
         } else {
@@ -34,38 +32,47 @@ class ExtractNikeService {
         }
       });
 
-      // Na Nike, use 'networkidle2' na primeira tentativa. 
-      // O 'domcontentloaded' é rápido demais e não dá tempo do desafio da Akamai carregar os cookies.
+      // 1. Navegação inicial rápida
       await page.goto(cleanUrl, {
-        waitUntil: 'networkidle2',
-        timeout: 45000
+        waitUntil: 'domcontentloaded',
+        timeout: 40000
       });
+
+      // Pequeno atraso tático (o "atrasinho")
+      // Isso ajuda a Akamai a processar o hardware-concurrency e outros testes de JS
+      await new Promise(r => setTimeout(r, 1000));
 
       let pageTitle = await page.title();
 
+      // 2. Avaliação de bloqueio e Teatro de Evasão
       if (pageTitle.includes('Access Denied') || pageTitle.includes('Denied') || pageTitle.includes('Just a moment')) {
-        console.log('[Nike] Bloqueio detectado. Executando evasão...');
+        console.log('[Centauro] Akamai detectado. Executando evasão rápida...');
 
+        // Movimento humano sutil
         await Promise.all([
           page.mouse.move(300 + Math.random() * 100, 400 + Math.random() * 100),
           page.evaluate(() => window.scrollBy(0, 300))
         ]);
 
-        await new Promise(r => setTimeout(r, 1500)); // Nike exige um pouco mais de "paciência"
+        // Espera o cookie "maturar"
+        await new Promise(r => setTimeout(r, 1200));
 
-        await page.reload({ waitUntil: 'networkidle2' });
+        // Recarrega a página forçando a passagem
+        await page.reload({ waitUntil: 'domcontentloaded' });
 
         pageTitle = await page.title();
         if (pageTitle.includes('Access Denied')) {
-          throw new Error('Bloqueio persistente na Nike. Verifique seu IP.');
+          throw new Error('Bloqueio persistente na Centauro. Tente novamente em instantes.');
         }
       }
 
-      const productData = await page.evaluate(extractNikeProductData);
+      // 3. Extração dos dados
+      const productData = await page.evaluate(extractCentauroProductData);
+
       return { ...productData, url: cleanUrl };
 
     } catch (error) {
-      console.error(`[Nike Scraper Error]: ${error.message}`);
+      console.error(`[Centauro Scraper Error]: ${error.message}`);
       throw error;
     } finally {
       if (page) {
@@ -75,4 +82,4 @@ class ExtractNikeService {
   }
 }
 
-module.exports = new ExtractNikeService();
+module.exports = new ExtractCentauroService();
