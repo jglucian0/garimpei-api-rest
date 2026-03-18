@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
   "userId": "garimpei_user_01",
-  "url": "https://meli.la/1yjEbf9"
+  "url": "https://www.mercadolivre.com.br/creatina-monohidratada-250g-growth-supplements-forca-sabor-sem-sabor/p/MLB32376444#polycard_client=recommendations_home_navigation-recommendations&reco_backend=machinalis-homes-univb-equivalent-offer&wid=MLB5652669256&reco_client=home_navigation-recommendations&reco_item_pos=1&reco_backend_type=function&reco_id=c90110ba-2a24-4e87-94c3-390869d9a4ca&sid=recos&c_id=/home/navigation-recommendations/element&c_uid=fdedbb60-d0bc-4b6a-b3e0-7641a00c482f"
   //"url": "https://produto.mercadolivre.com.br/MLB-4210056475-relogio-masculino-de-pulso-social-classico-casual-original-_JM#reco_item_pos=1&reco_backend=item_decorator&reco_backend_type=function&reco_client=home_items-decorator-legacy&reco_id=bf280dd9-cb57-4ca2-8d6e-bb015c459e77&reco_model=&c_id=/home/navigation-trends-recommendations/element&c_uid=8ce38009-add0-4581-9385-9d9b8c74ccae&da_id=navigation_trend&da_position=1&id_origin=/home/dynamic_access&da_sort_algorithm=ranker"
 }
 
@@ -38,5 +38,36 @@ Content-Type: application/json
   "userId": "garimpei_user_01",
   "tag": "ogarimpei-20"
 }
+
+###
+
+POST http://localhost:3001/api/v1/config/awin
+Content-Type: application/json
+
+{
+  "userId": "garimpei_user_01",
+  "awinaffid": "2815810"
+  }
+
+###
+
+POST http://localhost:3001/api/v1/extract
+Content-Type: application/json
+
+{
+  "userId": "garimpei_user_01",
+  "url": "https://click.centauro.com.br/13Nl/6wt8p4bq"
+  //"url": "https://www.centauro.com.br/regata-nike-dri-fit-legend-masculina-m0vbj8-mktp.html?cor=51"
+  }
+
+###
+
+POST http://localhost:3001/api/v1/extract
+Content-Type: application/json
+
+{
+  "userId": "garimpei_user_01",
+  "url": "https://www.nike.com.br/camisa-brasil-jordan-ii-2026-27-jogador-masculina-097619.html?aw_affid=2815810&awc=17652_1773792226_941c611aa1849d412c1d4525a2cdaeda&utm_source=Zanox&utm_medium=2815810&utm_campaign=João+Gabriel+Luciano+da+Luz&utm_content=&utm_term=Communities+%26+UGC&af_channel=2815810"
+  }
 
 ###
