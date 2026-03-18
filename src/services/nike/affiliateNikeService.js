@@ -16,10 +16,17 @@ class AffiliateNikeService {
 
     const awinLongLink = `https://www.awin1.com/cread.php?awinmid=${awinmid}&awinaffid=${awinaffid}&ued=${encodeURIComponent(productUrl)}`;
 
+
+    const baseUrl = appUrl || 'http://localhost:3001';
+    const existingCode = await shortLinkRepository.getExistingCode(awinLongLink, userId);
+
+    if (existingCode) {
+      return `${baseUrl}/s/${existingCode}`;
+    }
+
     const shortCode = crypto.randomBytes(3).toString('hex');
     await shortLinkRepository.saveLink(shortCode, awinLongLink, userId);
 
-    const baseUrl = appUrl || 'http://localhost:3001';
     return `${baseUrl}/s/${shortCode}`;
   }
 }

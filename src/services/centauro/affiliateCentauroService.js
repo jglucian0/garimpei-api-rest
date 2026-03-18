@@ -11,15 +11,21 @@ class AffiliateCentauroService {
       throw new Error('AWIN_TAG_NOT_FOUND');
     }
 
-    const awinmid = '17806'; // ID da Centauro
+    const awinmid = '17806';
     const awinaffid = userConfig.tag;
 
     const awinLongLink = `https://www.awin1.com/cread.php?awinmid=${awinmid}&awinaffid=${awinaffid}&ued=${encodeURIComponent(productUrl)}`;
+    const baseUrl = appUrl || 'http://localhost:3001';
+
+    const existingCode = await shortLinkRepository.getExistingCode(awinLongLink, userId);
+    if (existingCode) {
+      return `${baseUrl}/s/${existingCode}`;
+    }
 
     const shortCode = crypto.randomBytes(3).toString('hex');
     await shortLinkRepository.saveLink(shortCode, awinLongLink, userId);
 
-    const baseUrl = appUrl || 'http://localhost:3001';
+
     return `${baseUrl}/s/${shortCode}`;
   }
 }
