@@ -1,4 +1,7 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+puppeteer.use(StealthPlugin());
 
 class SessionSingleton {
   constructor() {
@@ -12,7 +15,7 @@ class SessionSingleton {
   async initBrowser() {
     if (!this.browser) {
       this.browser = await puppeteer.launch({
-        headless: true,
+        headless: "new",
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -44,9 +47,9 @@ class SessionSingleton {
 
     await page.setRequestInterception(true);
     page.on('request', req => {
-      const allowerdResources = ['document', 'xhr', 'fetch', 'script', 'stylesheet'];
+      const allowedResources = ['document', 'xhr', 'fetch', 'script', 'stylesheet', 'image'];
 
-      if (!allowerdResources.includes(req.resourceType())) {
+      if (!allowedResources.includes(req.resourceType())) {
         req.abort();
       } else {
         req.continue();

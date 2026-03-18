@@ -55,7 +55,6 @@ class ConfigController {
         return res.status(400).json({ error: 'The tag field is mandatory for generating Amazon affiliate links.' });
       }
 
-      // Salva no banco com marketplace 'AMAZON' e cookies vazios '[]'
       await userConfigRepository.saveUserConfigs(userId, 'AMAZON', [], tag);
 
       return res.status(200).json({
@@ -66,6 +65,31 @@ class ConfigController {
     } catch (error) {
       console.error('[ConfigController] Error:', error.message);
       return res.status(500).json({ error: 'Internal error while saving Amazon configuration.' });
+    }
+  }
+
+  async uploadAwinConfig(req, res) {
+    try {
+      const { userId, awinaffid } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({ error: 'The userId field is mandatory.' });
+      }
+
+      if (!awinaffid) {
+        return res.status(400).json({ error: 'The awinaffid field is mandatory for Awin networks.' });
+      }
+
+      await userConfigRepository.saveUserConfigs(userId, 'AWIN', [], awinaffid);
+
+      return res.status(200).json({
+        message: 'Awin ID successfully validated and saved in the database!',
+        active: true
+      });
+
+    } catch (error) {
+      console.error('[ConfigController] Error:', error.message);
+      return res.status(500).json({ error: 'Internal error while saving Awin configuration.' });
     }
   }
 }

@@ -13,7 +13,6 @@ class UserConfigRepository {
         updated_at = CURRENT_TIMESTAMP;
     `;
 
-    // Garante que o marketplace vá em MAIÚSCULO para evitar duplicação por case-sensitive
     const values = [userId, marketplace.toUpperCase(), JSON.stringify(cookiesArray), tag];
 
     try {
