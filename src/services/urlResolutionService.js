@@ -49,11 +49,24 @@ class UrlResolutionService {
       console.error(`[UrlResolution] Error resolving URL: ${error.message}`);
       return this.cleanUrl(url);
     }
+
+    return this.cleanUrl(finalUrl);
   }
 
   cleanUrl(url) {
     if (!url) return url;
-    return url.split('#')[0].split('?')[0];
+
+    let cleaned = url.split('#')[0];
+
+    if (cleaned.includes('centauro.com.br')) {
+      const urlObj = new URL(cleaned);
+      const colorParam = urlObj.searchParams.get('cor');
+
+      const finalBase = cleaned.split('?')[0];
+      return colorParam ? `${finalBase}?cor=${colorParam}` : finalBase;
+    }
+
+    return cleaned.split('?')[0];
   }
 }
 
