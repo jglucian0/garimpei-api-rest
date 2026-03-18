@@ -48,6 +48,7 @@ To ensure speed and resilience, the API implements several architectural pattern
 - **Precision Semantic Extraction:** High-accuracy scrapers using `data-testid` and advanced Regex to filter out "trash" data like price-per-liter, installment text, or recommended products.
 - **Built-in URL Shortener:** Generates clean, secure, and trackable short links (e.g., `/s/A7x9P`) for Amazon and Awin products to protect affiliate tags via HTTP 301 redirects.
 - **Separation of Concerns (SoC):** DOM extraction logic is completely decoupled from the Puppeteer engine, making maintenance and CSS selector updates much easier.
+- **API Security & Rate Limiting:** Protected endpoints using strict CORS policies, `x-api-key` header authentication, and IP-based rate limiting to prevent unauthorized access and infrastructure abuse.
 
 <h2 id="started">🚀 Getting started</h2>
 
@@ -78,6 +79,8 @@ PORT=3001
 DATABASE_URL=postgres://user:password@neon-db-url/dbname
 NODE_ENV=development
 APP_URL=http://localhost:3001
+INTERNAL_API_KEY=your_secure_api_key
+FRONTEND_URL=http://localhost:3000
 ```
 
 <h3>Starting</h3>
@@ -276,6 +279,7 @@ Para garantir velocidade e resiliência, a API implementa os seguintes padrões 
 - **Extração Semântica de Alta Precisão:** Scrapers de alta precisão utilizando `data-testid` e Regex avançado para filtrar dados irrelevantes, como preço por litro, textos de parcelamento ou produtos recomendados.
 - **Encurtador de URL Integrado:** Gera links curtos, limpos, seguros e rastreáveis (ex: `/s/A7x9P`) para produtos da Amazon e Awin, protegendo tags de afiliado via redirecionamentos HTTP 301.
 - **Separação de Responsabilidades (SoC):** A lógica de extração do DOM é completamente desacoplada do motor Puppeteer, facilitando muito a manutenção e a atualização de seletores CSS.
+- **Segurança e Rate Limiting:** Endpoints protegidos utilizando autenticação via header `x-api-key`, CORS restrito ao frontend e limitação de requisições por IP para evitar abusos na infraestrutura.
 
 <h2 id="started">🚀 Primeiros Passos</h2>
 
@@ -306,6 +310,8 @@ PORT=3001
 DATABASE_URL=postgres://user:password@neon-db-url/dbname
 NODE_ENV=development
 APP_URL=http://localhost:3001
+INTERNAL_API_KEY=sua_chave_de_api
+FRONTEND_URL=http://localhost:3000
 ```
 
 <h3>Starting</h3>

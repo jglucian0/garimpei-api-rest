@@ -5,7 +5,6 @@ const { appUrl } = require('../../config/env');
 
 class AffiliateCentauroService {
   async generateAffiliateLink(productUrl, userId) {
-    // Busca a configuração geral da AWIN
     const userConfig = await userConfigRepository.getUserConfigs(userId, 'AWIN');
 
     if (!userConfig || !userConfig.tag) {
@@ -15,10 +14,8 @@ class AffiliateCentauroService {
     const awinmid = '17806'; // ID da Centauro
     const awinaffid = userConfig.tag;
 
-    // Monta o link longo padrão da Awin
     const awinLongLink = `https://www.awin1.com/cread.php?awinmid=${awinmid}&awinaffid=${awinaffid}&ued=${encodeURIComponent(productUrl)}`;
 
-    // Encurta usando o sistema já existente
     const shortCode = crypto.randomBytes(3).toString('hex');
     await shortLinkRepository.saveLink(shortCode, awinLongLink, userId);
 
