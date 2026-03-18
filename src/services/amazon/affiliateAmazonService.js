@@ -11,14 +11,17 @@ class AffiliateAmazonService {
     }
 
     const amazonLongLink = `https://www.amazon.com.br/dp/${asin}?tag=${userConfig.tag}`;
-
-    const shortCode = crypto.randomBytes(3).toString('hex');
-
-    await shortLinkRepository.saveLink(shortCode, amazonLongLink, userId);
-
     const baseUrl = process.env.NODE_ENV === 'production'
       ? 'https://api.garimpei.com'
       : 'http://localhost:3001';
+
+    const existingCode = await shortLinkRepository.getExistingCode(amazonLongLink, userId);
+    if (existingCode) {
+      return `${baseUrl}/s/${existingCode}`;
+    }
+
+    const shortCode = crypto.randomBytes(3).toString('hex');
+    await shortLinkRepository.saveLink(shortCode, amazonLongLink, userId);
 
     return `${baseUrl}/s/${shortCode}`;
   }
