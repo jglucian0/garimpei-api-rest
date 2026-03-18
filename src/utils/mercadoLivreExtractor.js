@@ -41,15 +41,20 @@ function extractProductData() {
 
     const prices = moneyElements.map(el => {
 
+      if (el.closest('#price_per_unit_price_subtitle') || el.closest('[id*="unit_price"]')) {
+        return null;
+      }
+
       let reais = el.querySelector('.andes-money-amount__fraction')?.textContent;
       let cents = el.querySelector('.andes-money-amount__cents')?.textContent || '00';
 
       if (!reais) return null;
 
-      const value = Number(`${reais}.${cents}`);
+      const value = Number(`${reais.replace(/\D/g, '')}.${cents.replace(/\D/g, '')}`);
 
       const isStriked =
         el.closest('s') ||
+        el.classList.contains('andes-money-amount--previous') ||
         el.closest('.ui-pdp-price__original-value') ||
         el.getAttribute('aria-label')?.toLowerCase().includes('antes');
 
@@ -64,17 +69,19 @@ function extractProductData() {
 
     if (!prices.length) return null;
 
-    let oldPrice =
-      prices
-        .filter(p => p.isStriked && (!currentPriceValue || p.value > currentPriceValue))
-        .sort((a, b) => b.value - a.value)[0]
-      ||
-      prices
-        .filter(p => currentPriceValue && p.value > currentPriceValue)
-        .sort((a, b) => b.value - a.value)[0];
+    let oldPrice = prices.find(p => p.isStriked && (!currentPriceValue || p.value > currentPriceValue));
+
+    if (!oldPrice && currentPriceValue) {
+      const candidates = prices
+        .filter(p => p.value > currentPriceValue)
+        .sort((a, b) => b.value - a.value);
+
+      if (candidates.length > 0) {
+        oldPrice = candidates[0];
+      }
+    }
 
     if (!oldPrice) return null;
-
     return {
       raw: `${oldPrice.reais}.${oldPrice.cents || '00'}`,
       value: Number(`${oldPrice.reais}.${oldPrice.cents || '00'}`),
