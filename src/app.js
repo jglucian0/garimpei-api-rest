@@ -10,16 +10,16 @@ const routes = require('./routes');
 const redirectRoutes = require('./routes/redirect.routes');
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 50, // Limita cada IP a 50 requisições por janela
+  windowMs: 15 * 60 * 1000,
+  max: 50,
   message: { error: 'Too many requests', message: 'Muitas requisições vindas deste IP.' }
 });
 
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*', // Em prod, use seu domínio real
+  origin: process.env.FRONTEND_URL || '*',
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'x-api-key'] // Permite nosso header customizado
+  allowedHeaders: ['Content-Type', 'x-api-key']
 }));
 
 app.use('/api/v1', limiter, routes);
