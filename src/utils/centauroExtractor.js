@@ -11,7 +11,7 @@ function extractCentauroProductData() {
 
   const titleEl = document.querySelector('[data-testid="product-title"]');
   const titleMeta = document.querySelector('meta[property="og:title"]');
-  let title = titleEl ? titleEl.textContent.trim() : (titleMeta ? titleMeta.content : 'Título não encontrado');
+  let title = titleEl ? titleEl.textContent.trim() : (titleMeta ? titleMeta.content : 'Title not found');
   title = title.replace(/\s*\|\s*Centauro/i, '').trim();
 
   const imgEl = document.querySelector('[data-testid="product-image"] img, .product-image img');

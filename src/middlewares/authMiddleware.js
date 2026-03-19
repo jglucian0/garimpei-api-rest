@@ -5,7 +5,7 @@ const authMiddleware = (req, res, next) => {
   if (!apiKey || apiKey !== secret) {
     return res.status(403).json({
       error: 'Forbidden',
-      message: 'Acesso negado: Chave de API inválida ou ausente.'
+      message: 'Access Denied: Invalid or missing API key.'
     });
   }
 
