@@ -3,7 +3,6 @@ const cookieValidatorService = require('../services/cookieValidatorService');
 const userConfigRepository = require('../repositories/userConfigRepository');
 
 class ConfigController {
-
   async uploadCookies(req, res) {
     try {
       const { userId, cookies, tag } = req.body;
@@ -17,7 +16,9 @@ class ConfigController {
       }
 
       if (!tag) {
-        return res.status(400).json({ error: 'The tag field is mandatory for generating affiliate links.' });
+        return res
+          .status(400)
+          .json({ error: 'The tag field is mandatory for generating affiliate links.' });
       }
 
       const cookiesArray = cookieHelper.parseCookieHeader(cookies);
@@ -36,7 +37,6 @@ class ConfigController {
         message: 'Cookies successfully validated and saved in the database!',
         active: true
       });
-
     } catch (error) {
       console.error('[ConfigController] Error:', error.message);
       return res.status(400).json({ error: error.message });
@@ -52,7 +52,9 @@ class ConfigController {
       }
 
       if (!tag) {
-        return res.status(400).json({ error: 'The tag field is mandatory for generating Amazon affiliate links.' });
+        return res
+          .status(400)
+          .json({ error: 'The tag field is mandatory for generating Amazon affiliate links.' });
       }
 
       await userConfigRepository.saveUserConfigs(userId, 'AMAZON', [], tag);
@@ -61,7 +63,6 @@ class ConfigController {
         message: 'Amazon Tag successfully validated and saved in the database!',
         active: true
       });
-
     } catch (error) {
       console.error('[ConfigController] Error:', error.message);
       return res.status(500).json({ error: 'Internal error while saving Amazon configuration.' });
@@ -77,7 +78,9 @@ class ConfigController {
       }
 
       if (!awinaffid) {
-        return res.status(400).json({ error: 'The awinaffid field is mandatory for Awin networks.' });
+        return res
+          .status(400)
+          .json({ error: 'The awinaffid field is mandatory for Awin networks.' });
       }
 
       await userConfigRepository.saveUserConfigs(userId, 'AWIN', [], awinaffid);
@@ -86,7 +89,6 @@ class ConfigController {
         message: 'Awin ID successfully validated and saved in the database!',
         active: true
       });
-
     } catch (error) {
       console.error('[ConfigController] Error:', error.message);
       return res.status(500).json({ error: 'Internal error while saving Awin configuration.' });

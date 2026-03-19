@@ -1,7 +1,7 @@
 function extractProductData() {
   const getTitle = () => {
     const el = document.querySelector('.ui-pdp-title') || document.querySelector('h1');
-    return el ? el.innerText.trim() : "Title not found";
+    return el ? el.innerText.trim() : 'Title not found';
   };
 
   const extractCurrentPriceSemantic = () => {
@@ -32,48 +32,47 @@ function extractProductData() {
   };
 
   const extractOldPriceSemantic = (currentPriceValue) => {
-
-    const moneyElements = Array.from(
-      document.querySelectorAll('#price .andes-money-amount')
-    );
+    const moneyElements = Array.from(document.querySelectorAll('#price .andes-money-amount'));
 
     if (!moneyElements.length) return null;
 
-    const prices = moneyElements.map(el => {
+    const prices = moneyElements
+      .map((el) => {
+        if (el.closest('#price_per_unit_price_subtitle') || el.closest('[id*="unit_price"]')) {
+          return null;
+        }
 
-      if (el.closest('#price_per_unit_price_subtitle') || el.closest('[id*="unit_price"]')) {
-        return null;
-      }
+        let reais = el.querySelector('.andes-money-amount__fraction')?.textContent;
+        let cents = el.querySelector('.andes-money-amount__cents')?.textContent || '00';
 
-      let reais = el.querySelector('.andes-money-amount__fraction')?.textContent;
-      let cents = el.querySelector('.andes-money-amount__cents')?.textContent || '00';
+        if (!reais) return null;
 
-      if (!reais) return null;
+        const value = Number(`${reais.replace(/\D/g, '')}.${cents.replace(/\D/g, '')}`);
 
-      const value = Number(`${reais.replace(/\D/g, '')}.${cents.replace(/\D/g, '')}`);
+        const isStriked =
+          el.closest('s') ||
+          el.classList.contains('andes-money-amount--previous') ||
+          el.closest('.ui-pdp-price__original-value') ||
+          el.getAttribute('aria-label')?.toLowerCase().includes('antes');
 
-      const isStriked =
-        el.closest('s') ||
-        el.classList.contains('andes-money-amount--previous') ||
-        el.closest('.ui-pdp-price__original-value') ||
-        el.getAttribute('aria-label')?.toLowerCase().includes('antes');
-
-      return {
-        value,
-        reais,
-        cents,
-        isStriked: !!isStriked
-      };
-
-    }).filter(Boolean);
+        return {
+          value,
+          reais,
+          cents,
+          isStriked: !!isStriked
+        };
+      })
+      .filter(Boolean);
 
     if (!prices.length) return null;
 
-    let oldPrice = prices.find(p => p.isStriked && (!currentPriceValue || p.value > currentPriceValue));
+    let oldPrice = prices.find(
+      (p) => p.isStriked && (!currentPriceValue || p.value > currentPriceValue)
+    );
 
     if (!oldPrice && currentPriceValue) {
       const candidates = prices
-        .filter(p => p.value > currentPriceValue)
+        .filter((p) => p.value > currentPriceValue)
         .sort((a, b) => b.value - a.value);
 
       if (candidates.length > 0) {
@@ -92,9 +91,7 @@ function extractProductData() {
   };
 
   const extractShippingInfo = () => {
-
-    const normalize = txt =>
-      txt?.replace(/\s+/g, ' ').trim().toLowerCase();
+    const normalize = (txt) => txt?.replace(/\s+/g, ' ').trim().toLowerCase();
 
     const isValidShippingText = (text) => {
       if (!text) return false;
@@ -124,15 +121,15 @@ function extractProductData() {
       if (isValidShippingText(fullText)) return fullText.trim();
     }
 
-    const special = document.getElementById('special_event_shipping_summaryspecial_event_shipping_summary');
+    const special = document.getElementById(
+      'special_event_shipping_summaryspecial_event_shipping_summary'
+    );
     if (special) {
       const text = special.innerText;
       if (isValidShippingText(text)) return text.trim();
     }
 
-    const pills = Array.from(
-      document.querySelectorAll('.ui-pdp-promotions-pill-label')
-    );
+    const pills = Array.from(document.querySelectorAll('.ui-pdp-promotions-pill-label'));
 
     for (const el of pills) {
       const text = el.innerText;
@@ -149,7 +146,6 @@ function extractProductData() {
   };
 
   const extractPrimaryImage = () => {
-
     const isValidImage = (url) => {
       if (!url) return false;
 
@@ -160,20 +156,12 @@ function extractProductData() {
       if (u.includes('loading')) return false;
       if (u.includes('video')) return false;
 
-      return (
-        u.includes('.jpg') ||
-        u.includes('.jpeg') ||
-        u.includes('.png') ||
-        u.includes('.webp')
-      );
+      return u.includes('.jpg') || u.includes('.jpeg') || u.includes('.png') || u.includes('.webp');
     };
 
-    const figures = Array.from(
-      document.querySelectorAll('.ui-pdp-gallery__figure')
-    );
+    const figures = Array.from(document.querySelectorAll('.ui-pdp-gallery__figure'));
 
     for (const figure of figures) {
-
       if (figure.querySelector('.clip-wrapper')) continue;
 
       const zoomImg = figure.querySelector('img[data-zoom]');
@@ -193,7 +181,6 @@ function extractProductData() {
   };
 
   const extractSoldQuantity = () => {
-
     const subtitleContainer = document.querySelector('.ui-pdp-header__subtitle');
     if (!subtitleContainer) return null;
 
@@ -203,7 +190,7 @@ function extractProductData() {
     const aria = span.getAttribute('aria-label') || span.textContent;
     if (!aria) return null;
 
-    const match = aria.match(/(\+?\s*[\d\.]+\s*(mil|k|M|milhão|milhões)?\s*vendidos)/i);
+    const match = aria.match(/(\+?\s*[\d.]+\s*(mil|k|M|milhão|milhões)?\s*vendidos)/i);
 
     if (!match) return null;
 
@@ -218,21 +205,17 @@ function extractProductData() {
       .replace(/(\d)(mil)/i, '$1 mil')
       .replace(/(\d+)\s*k\b/i, '$1 mil')
       .replace(/(\d+)\s*M\b/i, (_, num) => {
-        return Number(num) === 1
-          ? `${num} milhão`
-          : `${num} milhões`;
+        return Number(num) === 1 ? `${num} milhão` : `${num} milhões`;
       });
 
     return text;
   };
 
   const extractCoupon = () => {
-
     const label =
       document.getElementById('coupon-awareness-row-label') ||
       document.querySelector('#coupon_summary-main-title') ||
       document.querySelector('[data-testid="coupon-label"]');
-
 
     if (!label) return null;
 
@@ -263,11 +246,9 @@ function extractProductData() {
   };
 
   const extractCouponMinimumPurchase = () => {
-
     const minNode = document.getElementById('coupon_summary-subtitles-style-label');
 
     if (minNode) {
-
       const fraction = minNode.querySelector('.andes-money-amount__fraction')?.textContent;
       const cents = minNode.querySelector('.andes-money-amount__cents')?.textContent || '00';
 
@@ -333,19 +314,15 @@ function extractProductData() {
 
   let appliedCoupon = false;
   if (coupon && currentPrice?.value) {
-
     if (!couponMinimum || currentPrice.value >= couponMinimum) {
       currentPrice = applyCouponDiscount(currentPrice, coupon);
       appliedCoupon = true;
     }
-
   }
 
   let discountPercent = null;
   if (oldPrice?.value && currentPrice?.value) {
-    discountPercent = Math.round(
-      ((oldPrice.value - currentPrice.value) / oldPrice.value) * 100
-    );
+    discountPercent = Math.round(((oldPrice.value - currentPrice.value) / oldPrice.value) * 100);
   }
 
   return {

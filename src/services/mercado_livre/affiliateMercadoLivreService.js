@@ -2,7 +2,6 @@ const axios = require('axios');
 const userConfigRepository = require('../../repositories/userConfigRepository');
 
 class AffiliateService {
-
   async generateAffiliateLink(originalLink, userId) {
     const userConfig = await userConfigRepository.getUserConfigs(userId, 'ML');
 
@@ -20,7 +19,7 @@ class AffiliateService {
       throw new Error('TAG_NOT_FOUND_IN_DB');
     }
 
-    const ssid = cookies.find(c => c.name === 'ssid')?.value;
+    const ssid = cookies.find((c) => c.name === 'ssid')?.value;
     if (!ssid) {
       throw new Error('NO_SSID');
     }
@@ -36,10 +35,11 @@ class AffiliateService {
           headers: {
             'content-type': 'application/json',
             'x-requested-with': 'XMLHttpRequest',
-            'origin': 'https://www.mercadolivre.com.br',
-            'referer': 'https://www.mercadolivre.com.br/afiliados/linkbuilder',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-            'cookie': `ssid=${ssid}`
+            origin: 'https://www.mercadolivre.com.br',
+            referer: 'https://www.mercadolivre.com.br/afiliados/linkbuilder',
+            'user-agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+            cookie: `ssid=${ssid}`
           },
           timeout: 8000
         }
@@ -49,10 +49,9 @@ class AffiliateService {
       if (!shortLink) throw new Error('INVALID_API_RESPONSE');
 
       return shortLink;
-
     } catch (error) {
       console.error(`[AffiliateService] Error generating link: ${error.message}`);
-      throw new Error('REQUEST_FAILED');
+      throw new Error('REQUEST_FAILED', { cause: error });
     }
   }
 }

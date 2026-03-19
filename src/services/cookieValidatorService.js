@@ -1,7 +1,6 @@
 const sessionSingleton = require('./sessionSingleton');
 
 class CookieValidatorService {
-
   async verifySessionActive(cookies) {
     if (!cookies || !cookies.length) return false;
 
@@ -25,18 +24,21 @@ class CookieValidatorService {
 
       const finalUrl = page.url();
 
-      if (finalUrl.includes('login') || finalUrl.includes('registration') || !finalUrl.includes('afiliados')) {
+      if (
+        finalUrl.includes('login') ||
+        finalUrl.includes('registration') ||
+        !finalUrl.includes('afiliados')
+      ) {
         return false;
       }
 
       return true;
-
     } catch (error) {
       console.error('[CookieValidator] Network error when testing cookies:', error.message);
       return false;
     } finally {
       if (context) {
-        await context.close().catch(() => { });
+        await context.close().catch(() => {});
       }
     }
   }

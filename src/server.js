@@ -16,5 +16,5 @@ const app = require('./app');
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`[Server] 'garimepi-api-rest' running in ${PORT}`)
-})
+  console.log(`[Server] 'garimepi-api-rest' running in ${PORT}`);
+});

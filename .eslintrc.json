@@ -1,0 +1,28 @@
+{
+  "env": {
+    "node": true,
+    "commonjs": true,
+    "es2021": true,
+    "jest/globals": true
+  },
+  "extends": ["eslint:recommended", "plugin:jest/recommended", "prettier"],
+  "plugins": ["jest", "no-secrets"],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "no-console": "off",
+    "no-secrets/no-secrets": [
+      "error",
+      {
+        "tolerance": 4.5
+      }
+    ]
+  }
+}

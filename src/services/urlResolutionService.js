@@ -19,8 +19,7 @@ class UrlResolutionService {
         validateStatus: () => true
       });
 
-      const finalUrl =
-        response?.request?.res?.responseUrl || response.config.url;
+      const finalUrl = response?.request?.res?.responseUrl || response.config.url;
 
       if (finalUrl.includes('/social/')) {
         const html = response.data;
@@ -49,8 +48,6 @@ class UrlResolutionService {
       console.error(`[UrlResolution] Error resolving URL: ${error.message}`);
       return this.cleanUrl(url);
     }
-
-    return this.cleanUrl(finalUrl);
   }
 
   cleanUrl(url) {

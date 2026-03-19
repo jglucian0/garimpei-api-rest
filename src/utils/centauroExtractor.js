@@ -11,18 +11,22 @@ function extractCentauroProductData() {
 
   const titleEl = document.querySelector('[data-testid="product-title"]');
   const titleMeta = document.querySelector('meta[property="og:title"]');
-  let title = titleEl ? titleEl.textContent.trim() : (titleMeta ? titleMeta.content : 'Título não encontrado');
+  let title = titleEl
+    ? titleEl.textContent.trim()
+    : titleMeta
+      ? titleMeta.content
+      : 'Title not found';
   title = title.replace(/\s*\|\s*Centauro/i, '').trim();
 
   const imgEl = document.querySelector('[data-testid="product-image"] img, .product-image img');
   const imgMeta = document.querySelector('meta[property="og:image"]');
-  const imageUrl = imgEl ? imgEl.getAttribute('src') : (imgMeta ? imgMeta.content : null);
+  const imageUrl = imgEl ? imgEl.getAttribute('src') : imgMeta ? imgMeta.content : null;
 
   const currentPriceEl = document.querySelector('[data-testid="price-current"]');
   const currentPriceValue = currentPriceEl ? parsePrice(currentPriceEl.textContent) : null;
 
   const oldPriceEl = document.querySelector('[data-testid="price-promotion"] del');
-  const oldPriceValue = oldPriceEl ? parsePrice(oldPriceEl.textContent) : null;
+  let oldPriceValue = oldPriceEl ? parsePrice(oldPriceEl.textContent) : null;
 
   if (oldPriceValue === currentPriceValue) {
     oldPriceValue = null;

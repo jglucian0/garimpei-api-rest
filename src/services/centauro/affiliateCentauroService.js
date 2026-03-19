@@ -25,7 +25,6 @@ class AffiliateCentauroService {
     const shortCode = crypto.randomBytes(3).toString('hex');
     await shortLinkRepository.saveLink(shortCode, awinLongLink, userId);
 
-
     return `${baseUrl}/s/${shortCode}`;
   }
 }

@@ -26,10 +26,7 @@ describe('AffiliateAmazonService', () => {
 
     const result = await affiliateAmazonService.generateAffiliateLink(asin, userId);
 
-    expect(userConfigRepository.getUserConfigs).toHaveBeenCalledWith(
-      userId,
-      'AMAZON'
-    );
+    expect(userConfigRepository.getUserConfigs).toHaveBeenCalledWith(userId, 'AMAZON');
     expect(shortLinkRepository.saveLink).toHaveBeenCalledWith(
       'aB3x9Q',
       'https://www.amazon.com.br/dp/B0BTYCRJSS?tag=ogarimpei-20',
@@ -41,8 +38,8 @@ describe('AffiliateAmazonService', () => {
   it('should throw an error if the user has not configured the Amazon tag', async () => {
     userConfigRepository.getUserConfigs.mockResolvedValue(null);
 
-    await expect(affiliateAmazonService.generateAffiliateLink('B0BTYCRJSS', 'user1'))
-      .rejects
-      .toThrow('AMAZON_TAG_NOT_FOUND');
+    await expect(
+      affiliateAmazonService.generateAffiliateLink('B0BTYCRJSS', 'user1')
+    ).rejects.toThrow('AMAZON_TAG_NOT_FOUND');
   });
 });
