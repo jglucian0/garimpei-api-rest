@@ -15,7 +15,7 @@ class SessionSingleton {
   async initBrowser() {
     if (!this.browser) {
       this.browser = await puppeteer.launch({
-        headless: "new",
+        headless: 'new',
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -46,7 +46,7 @@ class SessionSingleton {
     );
 
     await page.setRequestInterception(true);
-    page.on('request', req => {
+    page.on('request', (req) => {
       const allowedResources = ['document', 'xhr', 'fetch', 'script', 'stylesheet', 'image'];
 
       if (!allowedResources.includes(req.resourceType())) {

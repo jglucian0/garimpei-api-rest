@@ -35,11 +35,15 @@ class ExtractNikeService {
         timeout: 40000
       });
 
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
 
       let pageTitle = await page.title();
 
-      if (pageTitle.includes('Access Denied') || pageTitle.includes('Denied') || pageTitle.includes('Just a moment')) {
+      if (
+        pageTitle.includes('Access Denied') ||
+        pageTitle.includes('Denied') ||
+        pageTitle.includes('Just a moment')
+      ) {
         console.log('[Nike] Akamai detected. Executing quick evasion...');
 
         await Promise.all([
@@ -47,7 +51,7 @@ class ExtractNikeService {
           page.evaluate(() => window.scrollBy(0, 300))
         ]);
 
-        await new Promise(r => setTimeout(r, 1200));
+        await new Promise((r) => setTimeout(r, 1200));
 
         await page.reload({ waitUntil: 'domcontentloaded' });
 
@@ -60,13 +64,12 @@ class ExtractNikeService {
       const productData = await page.evaluate(extractNikeProductData);
 
       return { ...productData, url: cleanUrl };
-
     } catch (error) {
       console.error(`[Nike Scraper Error]: ${error.message}`);
       throw error;
     } finally {
       if (page) {
-        await page.close().catch(() => { });
+        await page.close().catch(() => {});
       }
     }
   }

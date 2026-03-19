@@ -35,7 +35,11 @@ class ExtractionController {
       let marketplace = null;
       if (resolvedUrl.includes('mercadolivre.com') || resolvedUrl.includes('meli.la')) {
         marketplace = 'ML';
-      } else if (resolvedUrl.includes('amazon.com.br') || resolvedUrl.includes('amzn.to') || resolvedUrl.includes('a.co')) {
+      } else if (
+        resolvedUrl.includes('amazon.com.br') ||
+        resolvedUrl.includes('amzn.to') ||
+        resolvedUrl.includes('a.co')
+      ) {
         marketplace = 'AMAZON';
       } else if (resolvedUrl.includes('centauro.com.br')) {
         marketplace = 'CENTAURO';
@@ -53,16 +57,16 @@ class ExtractionController {
       if (marketplace === 'ML') {
         productData = await scraperMLService.fetchProduct(resolvedUrl, userId);
         affiliateLink = await affiliateMLService.generateAffiliateLink(productData.url, userId);
-      }
-      else if (marketplace === 'AMAZON') {
+      } else if (marketplace === 'AMAZON') {
         productData = await scraperAmzService.fetchProduct(resolvedUrl);
         affiliateLink = await affiliateAmzService.generateAffiliateLink(productData.asin, userId);
-      }
-      else if (marketplace === 'CENTAURO') {
+      } else if (marketplace === 'CENTAURO') {
         productData = await scraperCentauroService.fetchProduct(resolvedUrl);
-        affiliateLink = await affiliateCentauroService.generateAffiliateLink(productData.url, userId);
-      }
-      else if (marketplace === 'NIKE') {
+        affiliateLink = await affiliateCentauroService.generateAffiliateLink(
+          productData.url,
+          userId
+        );
+      } else if (marketplace === 'NIKE') {
         productData = await scraperNikeService.fetchProduct(resolvedUrl);
         affiliateLink = await affiliateNikeService.generateAffiliateLink(productData.url, userId);
       }
@@ -82,19 +86,29 @@ class ExtractionController {
       };
 
       return res.status(200).json(responsePayload);
-
     } catch (error) {
       console.error(`[ExtractionController] Fatal Error: ${error.message}`);
 
-      if (error.message === 'ML_COOKIES_NOT_FOUND') return res.status(401).json({ error: 'Mercado Livre cookies not found or expired.' });
-      if (error.message === 'ML_TAG_NOT_FOUND') return res.status(401).json({ error: 'Mercado Livre tag not configured.' });
-      if (error.message === 'AMAZON_TAG_NOT_FOUND') return res.status(401).json({ error: 'Amazon configuration not found for this user.' });
-      if (error.message === 'AWIN_TAG_NOT_FOUND') return res.status(401).json({ error: 'Awin ID (awinaffid) not configured for this user.' });
-      if (error.message === 'TAG_NOT_FOUND_IN_DB') return res.status(400).json({ error: 'Missing affiliate tag.' });
-      if (error.message === 'NO_SSID') return res.status(401).json({ error: 'Invalid session (SSID missing). Please log in again.' });
-      if (error.message === 'REQUEST_FAILED' || error.message === 'INVALID_API_RESPONSE') return res.status(502).json({ error: 'Failed to communicate with the Marketplace API.' });
+      if (error.message === 'ML_COOKIES_NOT_FOUND')
+        return res.status(401).json({ error: 'Mercado Livre cookies not found or expired.' });
+      if (error.message === 'ML_TAG_NOT_FOUND')
+        return res.status(401).json({ error: 'Mercado Livre tag not configured.' });
+      if (error.message === 'AMAZON_TAG_NOT_FOUND')
+        return res.status(401).json({ error: 'Amazon configuration not found for this user.' });
+      if (error.message === 'AWIN_TAG_NOT_FOUND')
+        return res.status(401).json({ error: 'Awin ID (awinaffid) not configured for this user.' });
+      if (error.message === 'TAG_NOT_FOUND_IN_DB')
+        return res.status(400).json({ error: 'Missing affiliate tag.' });
+      if (error.message === 'NO_SSID')
+        return res
+          .status(401)
+          .json({ error: 'Invalid session (SSID missing). Please log in again.' });
+      if (error.message === 'REQUEST_FAILED' || error.message === 'INVALID_API_RESPONSE')
+        return res.status(502).json({ error: 'Failed to communicate with the Marketplace API.' });
 
-      return res.status(500).json({ error: 'Internal error while trying to extract product data.' });
+      return res
+        .status(500)
+        .json({ error: 'Internal error while trying to extract product data.' });
     }
   }
 }

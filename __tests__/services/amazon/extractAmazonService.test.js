@@ -18,23 +18,23 @@ describe('ExtractAmazonService', () => {
       goto: jest.fn().mockResolvedValue(true),
       evaluate: jest.fn().mockResolvedValue({
         title: 'Fone Bluetooth Mockado',
-        currentPriceValue: 150.00,
-        oldPriceValue: 200.00,
+        currentPriceValue: 150.0,
+        oldPriceValue: 200.0,
         discountPercent: 25,
         imageUrl: 'http://img.mock/1.jpg',
         shipping: true,
         soldQuantity: '+ 1 mil compras',
         couponApplied: false
-      }),
+      })
     };
 
     mockContext = {
       newPage: jest.fn().mockResolvedValue(mockPage),
-      close: jest.fn().mockResolvedValue(true),
+      close: jest.fn().mockResolvedValue(true)
     };
 
     mockBrowser = {
-      createBrowserContext: jest.fn().mockResolvedValue(mockContext),
+      createBrowserContext: jest.fn().mockResolvedValue(mockContext)
     };
 
     sessionSingleton.initBrowser.mockResolvedValue(mockBrowser);
@@ -51,15 +51,20 @@ describe('ExtractAmazonService', () => {
     expect(result.url).toBe('https://www.amazon.com.br/dp/B0BTYCRJSS');
 
     expect(result.title).toBe('Fone Bluetooth Mockado');
-    expect(mockPage.goto).toHaveBeenCalledWith('https://www.amazon.com.br/dp/B0BTYCRJSS', expect.any(Object));
+    expect(mockPage.goto).toHaveBeenCalledWith(
+      'https://www.amazon.com.br/dp/B0BTYCRJSS',
+      expect.any(Object)
+    );
     expect(mockContext.close).toHaveBeenCalledTimes(1);
   });
 
   it('should throw an error if the URL does not contain a valid ASIN', async () => {
     urlResolutionService.resolveFinalUrl.mockResolvedValue('https://www.amazon.com.br/home');
 
-    await expect(extractAmazonService.fetchProduct('https://www.amazon.com.br/home'))
-      .rejects
-      .toThrow("The ASIN could not be found in the Amazon link. Make sure it's a valid product link.");
+    await expect(
+      extractAmazonService.fetchProduct('https://www.amazon.com.br/home')
+    ).rejects.toThrow(
+      "The ASIN could not be found in the Amazon link. Make sure it's a valid product link."
+    );
   });
 });

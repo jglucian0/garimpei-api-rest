@@ -1,7 +1,6 @@
 const pool = require('../infra/db');
 
 class UserConfigRepository {
-
   async saveUserConfigs(userId, marketplace, cookiesArray, tag) {
     const query = `
       INSERT INTO user_marketplace_configs (user_id, marketplace, cookies, tag, updated_at)
@@ -20,7 +19,7 @@ class UserConfigRepository {
       return true;
     } catch (error) {
       console.error('[Repository] Error saving configs:', error.message);
-      throw new Error('Failed to save configurations to the database.');
+      throw new Error('Failed to save configurations to the database.', { cause: error });
     }
   }
 
@@ -43,7 +42,7 @@ class UserConfigRepository {
       return result.rows[0];
     } catch (error) {
       console.error('[Repository] Error when fetching configs:', error.message);
-      throw new Error('Failed to retrieve configurations from the database.');
+      throw new Error('Failed to retrieve configurations from the database.', { cause: error });
     }
   }
 }

@@ -39,20 +39,21 @@ describe('ExtractNikeService', () => {
     mockPage.title.mockResolvedValue('Tênis Nike Revolution');
     mockPage.evaluate.mockResolvedValue({
       title: 'Tênis Nike Revolution',
-      currentPriceValue: 450.00
+      currentPriceValue: 450.0
     });
 
     const result = await extractNikeService.fetchProduct('https://nike-curto.com');
 
     expect(mockPage.goto).toHaveBeenCalledWith('https://www.nike.com.br/tenis', expect.any(Object));
-    expect(result.currentPriceValue).toBe(450.00);
+    expect(result.currentPriceValue).toBe(450.0);
   });
 
   it('should throw error if Akamai block persists', async () => {
     mockPage.title.mockResolvedValue('Access Denied');
 
-    await expect(extractNikeService.fetchProduct('https://nike-curto.com'))
-      .rejects.toThrow('Persistent block on Nike. Please try again in a moment.');
+    await expect(extractNikeService.fetchProduct('https://nike-curto.com')).rejects.toThrow(
+      'Persistent block on Nike. Please try again in a moment.'
+    );
 
     expect(mockPage.reload).toHaveBeenCalled();
     expect(mockPage.close).toHaveBeenCalled();

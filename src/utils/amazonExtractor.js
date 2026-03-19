@@ -9,7 +9,7 @@ function extractAmazonProductData() {
   const titleEl = document.querySelector('#productTitle');
   const imgEl = document.querySelector('#landingImage') || document.querySelector('#imgBlkFront');
 
-  let currentPriceValue = null;
+  let currentPriceValue;
   const currentPriceWhole = document.querySelector('.priceToPay .a-price-whole');
   const currentPriceFraction = document.querySelector('.priceToPay .a-price-fraction');
 
@@ -18,11 +18,15 @@ function extractAmazonProductData() {
     const fraction = currentPriceFraction.textContent.replace(/\D/g, '');
     currentPriceValue = Number(`${whole}.${fraction}`);
   } else {
-    const currentPriceEl = document.querySelector('.priceToPay span[aria-hidden="true"]') || document.querySelector('.priceToPay');
+    const currentPriceEl =
+      document.querySelector('.priceToPay span[aria-hidden="true"]') ||
+      document.querySelector('.priceToPay');
     currentPriceValue = parsePrice(currentPriceEl ? currentPriceEl.textContent : null);
   }
 
-  const oldPriceEl = document.querySelector('.basisPrice .a-offscreen') || document.querySelector('.a-text-price[data-a-strike="true"] span[aria-hidden="true"]');
+  const oldPriceEl =
+    document.querySelector('.basisPrice .a-offscreen') ||
+    document.querySelector('.a-text-price[data-a-strike="true"] span[aria-hidden="true"]');
   const oldPriceValue = parsePrice(oldPriceEl ? oldPriceEl.textContent : null);
 
   let discountPercent = null;
@@ -42,18 +46,29 @@ function extractAmazonProductData() {
   }
 
   let freeShipping = false;
-  const deliveryBlock = document.querySelector('#deliveryBlock_feature_div') || document.querySelector('#deliveryBlockMessage');
+  const deliveryBlock =
+    document.querySelector('#deliveryBlock_feature_div') ||
+    document.querySelector('#deliveryBlockMessage');
   if (deliveryBlock) {
     const deliveryText = deliveryBlock.textContent.toLowerCase();
-    if (deliveryText.includes('grátis') || deliveryText.includes('gratis') || deliveryText.includes('free')) {
+    if (
+      deliveryText.includes('grátis') ||
+      deliveryText.includes('gratis') ||
+      deliveryText.includes('free')
+    ) {
       freeShipping = true;
     }
   }
 
   let soldQuantity = null;
-  const soldEl = document.querySelector('#social-proofing-faceout-title-tk_bought') || document.querySelector('.social-proofing-faceout-title-text');
+  const soldEl =
+    document.querySelector('#social-proofing-faceout-title-tk_bought') ||
+    document.querySelector('.social-proofing-faceout-title-text');
   if (soldEl) {
-    let text = soldEl.textContent.replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
+    let text = soldEl.textContent
+      .replace(/\u00A0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
     text = text.replace(/Mais de/i, '+');
     soldQuantity = text;
   }

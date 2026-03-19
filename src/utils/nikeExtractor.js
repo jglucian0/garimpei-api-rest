@@ -12,13 +12,21 @@ function extractNikeProductData() {
 
   const titleEl = document.querySelector('[data-testid="product-name"]');
   const titleMeta = document.querySelector('meta[property="og:title"]');
-  let title = titleEl ? titleEl.textContent.trim() : (titleMeta ? titleMeta.content : 'Title not found');
+  let title = titleEl
+    ? titleEl.textContent.trim()
+    : titleMeta
+      ? titleMeta.content
+      : 'Title not found';
 
   title = title.replace(/\s*-\s*Nike\s*Brasil/i, '').trim();
 
   const imgMeta = document.querySelector('meta[property="og:image"]');
   const imgEl = document.querySelector('img[data-testid="product-image"], .product-image img');
-  const imageUrl = imgEl ? (imgEl.getAttribute('src') || imgEl.src) : (imgMeta ? imgMeta.content : null);
+  const imageUrl = imgEl
+    ? imgEl.getAttribute('src') || imgEl.src
+    : imgMeta
+      ? imgMeta.content
+      : null;
 
   const currentPriceEl = document.querySelector('[data-testid="main-price"]');
   const oldPriceEl = document.querySelector('[data-testid="old-price"]');

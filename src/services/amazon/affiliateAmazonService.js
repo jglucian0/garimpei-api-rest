@@ -11,9 +11,8 @@ class AffiliateAmazonService {
     }
 
     const amazonLongLink = `https://www.amazon.com.br/dp/${asin}?tag=${userConfig.tag}`;
-    const baseUrl = process.env.NODE_ENV === 'production'
-      ? 'https://api.garimpei.com'
-      : 'http://localhost:3001';
+    const baseUrl =
+      process.env.NODE_ENV === 'production' ? 'https://api.garimpei.com' : 'http://localhost:3001';
 
     const existingCode = await shortLinkRepository.getExistingCode(amazonLongLink, userId);
     if (existingCode) {

@@ -27,7 +27,9 @@ class ScraperService {
 
       await this.preparePage(page);
 
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
+      );
 
       await page.setCookie(...cookies);
 
@@ -39,20 +41,19 @@ class ScraperService {
       const productData = await page.evaluate(extractProductData);
 
       return productData;
-
     } catch (error) {
       console.error(`[Scraper Error]: ${error.message}`);
       throw error;
     } finally {
       if (context) {
-        await context.close().catch(() => { });
+        await context.close().catch(() => {});
       }
     }
   }
 
   async preparePage(page) {
     await page.setRequestInterception(true);
-    page.on('request', req => {
+    page.on('request', (req) => {
       const allowedResources = ['document', 'xhr', 'fetch', 'script', 'stylesheet'];
       if (!allowedResources.includes(req.resourceType())) {
         req.abort();

@@ -9,7 +9,7 @@ class ShortLinkRepository {
       return result.rows.length ? result.rows[0].code : null;
     } catch (error) {
       console.error('[Repository] Error checking existing link:', error.message);
-      throw new Error('Failed to check existing link in database.');
+      throw new Error('Failed to check existing link in database.', { cause: error });
     }
   }
 
@@ -20,7 +20,7 @@ class ShortLinkRepository {
       await pool.query(query, [code, originalUrl, userId]);
     } catch (error) {
       console.error('[Repository] Error saving short link:', error.message);
-      throw new Error('Failed to save link to database.');
+      throw new Error('Failed to save link to database.', { cause: error });
     }
   }
 
@@ -32,7 +32,7 @@ class ShortLinkRepository {
       return result.rows.length ? result.rows[0].original_url : null;
     } catch (error) {
       console.error('[Repository] Error when fetching short link:', error.message);
-      throw new Error('Failed to fetch the link from the database.');
+      throw new Error('Failed to fetch the link from the database.', { cause: error });
     }
   }
 }

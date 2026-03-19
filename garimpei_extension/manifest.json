@@ -3,15 +3,8 @@
   "name": "Garimpei - Mercado Livre",
   "version": "1.1",
   "description": "Coleta automática de cookies do afiliado Mercado Livre",
-  "permissions": [
-    "cookies",
-    "activeTab",
-    "tabs",
-    "clipboardWrite"
-  ],
-  "host_permissions": [
-    "https://*.mercadolivre.com.br/*"
-  ],
+  "permissions": ["cookies", "activeTab", "tabs", "clipboardWrite"],
+  "host_permissions": ["https://*.mercadolivre.com.br/*"],
   "icons": {
     "16": "16.png",
     "32": "32.png",

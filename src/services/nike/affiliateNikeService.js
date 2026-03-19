@@ -16,7 +16,6 @@ class AffiliateNikeService {
 
     const awinLongLink = `https://www.awin1.com/cread.php?awinmid=${awinmid}&awinaffid=${awinaffid}&ued=${encodeURIComponent(productUrl)}`;
 
-
     const baseUrl = appUrl || 'http://localhost:3001';
     const existingCode = await shortLinkRepository.getExistingCode(awinLongLink, userId);
 

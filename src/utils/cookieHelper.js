@@ -5,9 +5,9 @@ function parseCookieHeader(cookieString) {
 
   const cookies = cookieString
     .split(';')
-    .map(c => c.trim())
+    .map((c) => c.trim())
     .filter(Boolean)
-    .map(pair => {
+    .map((pair) => {
       const [name, ...rest] = pair.split('=');
       const value = rest.join('=');
 
@@ -26,7 +26,7 @@ function parseCookieHeader(cookieString) {
     throw new Error('No cookies were detected.');
   }
 
-  const hasSSID = cookies.some(c => c.name === 'ssid');
+  const hasSSID = cookies.some((c) => c.name === 'ssid');
 
   if (!hasSSID) {
     throw new Error('Cookie does not contain ssid (not logged session).');

@@ -45,7 +45,8 @@ describe('AffiliateCentauroService', () => {
   it('should throw an error if the user does not have the AWIN tag', async () => {
     userConfigRepository.getUserConfigs.mockResolvedValue(null);
 
-    await expect(affiliateCentauroService.generateAffiliateLink(mockProductUrl, mockUserId))
-      .rejects.toThrow('AWIN_TAG_NOT_FOUND');
+    await expect(
+      affiliateCentauroService.generateAffiliateLink(mockProductUrl, mockUserId)
+    ).rejects.toThrow('AWIN_TAG_NOT_FOUND');
   });
 });

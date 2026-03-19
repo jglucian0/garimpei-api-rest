@@ -46,7 +46,10 @@ describe('ExtractCentauroService', () => {
     const result = await extractCentauroService.fetchProduct('https://url-curta.com');
 
     expect(sessionSingleton.initBrowser).toHaveBeenCalled();
-    expect(mockPage.goto).toHaveBeenCalledWith('https://www.centauro.com.br/tenis', expect.any(Object));
+    expect(mockPage.goto).toHaveBeenCalledWith(
+      'https://www.centauro.com.br/tenis',
+      expect.any(Object)
+    );
     expect(mockPage.evaluate).toHaveBeenCalled();
     expect(mockPage.close).toHaveBeenCalled();
     expect(result.currentPriceValue).toBe(299.99);

@@ -1,25 +1,18 @@
-const cookieNames = [
-  "ssid",
-  "_d2id",
-  "_csrf",
-  "x-meli-session-id",
-  "ftid"
-];
+const cookieNames = ['ssid', '_d2id', '_csrf', 'x-meli-session-id', 'ftid'];
 
 function getCookie(name) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     chrome.cookies.get(
       {
-        url: "https://www.mercadolivre.com.br",
+        url: 'https://www.mercadolivre.com.br',
         name: name
       },
-      cookie => resolve(cookie ? cookie.value : null)
+      (cookie) => resolve(cookie ? cookie.value : null)
     );
   });
 }
 
 async function collectCookies() {
-
   const cookies = [];
 
   for (const name of cookieNames) {
@@ -27,19 +20,17 @@ async function collectCookies() {
     if (value) cookies.push(`${name}=${value}`);
   }
 
-  return cookies.join("; ");
+  return cookies.join('; ');
 }
 
 async function checkPage() {
-
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
 
   const url = tabs[0].url;
 
-  const status = document.getElementById("status");
+  const status = document.getElementById('status');
 
-  if (!url.includes("mercadolivre.com.br")) {
-
+  if (!url.includes('mercadolivre.com.br')) {
     status.innerHTML = `
 <div class="status-dot error"></div>
 <span>Abra o Mercado Livre logado</span>
@@ -48,8 +39,7 @@ async function checkPage() {
     return false;
   }
 
-  if (!url.includes("/afiliados")) {
-
+  if (!url.includes('/afiliados')) {
     status.innerHTML = `
 <div class="status-dot error"></div>
 <span>Abra a página de afiliados</span>
@@ -64,37 +54,32 @@ async function checkPage() {
 `;
 
   return true;
-
 }
 
 async function init() {
-
   const valid = await checkPage();
 
   if (!valid) return;
 
   const cookieHeader = await collectCookies();
 
-  document.getElementById("result").textContent = cookieHeader;
-
+  document.getElementById('result').textContent = cookieHeader;
 }
 
-document.getElementById("copy").onclick = () => {
-
-  const text = document.getElementById("result").textContent;
+document.getElementById('copy').onclick = () => {
+  const text = document.getElementById('result').textContent;
 
   if (!text) return;
 
   navigator.clipboard.writeText(text);
 
-  const copied = document.getElementById("copied");
+  const copied = document.getElementById('copied');
 
-  copied.classList.add("show");
+  copied.classList.add('show');
 
   setTimeout(() => {
-    copied.classList.remove("show");
+    copied.classList.remove('show');
   }, 2000);
-
 };
 
 init();
